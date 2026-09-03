@@ -1,66 +1,55 @@
-"use client";
+import type { Metadata } from "next";
 
-import { useState } from "react";
+import { CapIcon, SparkIcon } from "@/components/icons";
+import { MAX_TOPIC_LENGTH, isSubject } from "@/lib/tutor";
 
-export default function TutorPage() {
-  const [topic, setTopic] = useState("");
-  const [lesson, setLesson] = useState("");
+import TutorClient from "./tutor-client";
 
-  const explainTopic = () => {
-    if (topic.toLowerCase() === "fractions") {
-      setLesson(
-        "Fractions ko pizza ki misaal se samjho. Agar pizza ko 4 equal hisson mein taqseem kiya jaye aur tum 1 hissa kha lo to tum ne 1/4 pizza khaya."
-      );
-    } else if (topic.toLowerCase() === "photosynthesis") {
-      setLesson(
-        "Photosynthesis wo process hai jisme plants dhoop, pani aur carbon dioxide ki madad se apna khana banate hain."
-      );
-    } else if (topic.toLowerCase() === "salah") {
-      setLesson(
-        "Salah Islam ka doosra bunyadi rukn hai. Musalman din mein 5 martaba namaz ada karte hain."
-      );
-    } else {
-      setLesson(
-        "Demo ke liye Fractions, Photosynthesis ya Salah likhein."
-      );
-    }
-  };
+export const metadata: Metadata = {
+  title: "AI Tutor",
+  description:
+    "Type any topic and get a simple explanation, three practice MCQs, and a suggested next lesson.",
+};
+
+/** `searchParams` values are `string | string[]`; deep links only ever need the first. */
+function firstValue(value: string | string[] | undefined): string {
+  return (Array.isArray(value) ? value[0] : value) ?? "";
+}
+
+/**
+ * Server Component so `?subject=` is read during render instead of via
+ * `useSearchParams()`, which suspends and would cost a client-side round trip
+ * before the form could be shown.
+ */
+export default async function TutorPage({ searchParams }: PageProps<"/tutor">) {
+  const params = await searchParams;
+  const subjectParam = firstValue(params.subject);
+  const subject = isSubject(subjectParam) ? subjectParam : null;
+  const topic = firstValue(params.topic).slice(0, MAX_TOPIC_LENGTH);
 
   return (
-    <main className="min-h-screen p-8 max-w-3xl mx-auto">
-      <h1 className="text-4xl font-bold text-center">
-        AI Tutor
-      </h1>
-
-      <p className="text-center mt-2 text-gray-600">
-        Enter a topic and let AI explain it.
-      </p>
-
-      <div className="mt-8">
-        <input
-          type="text"
-          placeholder="Fractions, Photosynthesis, Salah..."
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-          className="w-full border p-3 rounded-lg"
-        />
-
-        <button
-          onClick={explainTopic}
-          className="mt-4 bg-black text-white px-6 py-3 rounded-lg"
-        >
-          Mujhe Samjhao
-        </button>
+    <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
+      <div className="mb-6 sm:mb-8">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+          <SparkIcon className="h-4 w-4" />
+          AI Tutor
+        </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+          {subject ? `${subject} — koi bhi topic poochho` : "Koi bhi topic poochho"}
+        </h1>
+        <p className="mt-2 max-w-2xl text-muted">
+          Aap topic likhein, AI aap ko simple English aur Roman Urdu mein samjhayega —
+          phir 3 practice questions aur agla lesson bhi dega.
+        </p>
+        {subject && (
+          <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-pk-200 bg-pk-50 px-3 py-1 text-sm font-medium text-pk-800 dark:border-pk-800 dark:bg-pk-950 dark:text-pk-200">
+            <CapIcon className="h-4 w-4" />
+            Subject: {subject}
+          </p>
+        )}
       </div>
 
-      {lesson && (
-        <div className="mt-8 border rounded-xl p-6 shadow">
-          <h2 className="text-2xl font-semibold mb-3">
-            Lesson
-          </h2>
-          <p>{lesson}</p>
-        </div>
-      )}
+      <TutorClient initialTopic={topic} initialSubject={subject} />
     </main>
   );
 }

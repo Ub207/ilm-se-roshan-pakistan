@@ -1,81 +1,34 @@
-"use client";
+import type { Metadata } from "next";
 
-import { useState } from "react";
+import { QuizIcon } from "@/components/icons";
+import { QUESTIONS_PER_ROUND } from "@/lib/quiz";
+
+import QuizClient from "./quiz-client";
+
+export const metadata: Metadata = {
+  title: "Quiz",
+  description:
+    "Subject-wise practice quiz with instant feedback, scoring, and a result screen that feeds your progress report.",
+};
 
 export default function QuizPage() {
-  const [selected, setSelected] = useState("");
-  const [result, setResult] = useState("");
-
-  const checkAnswer = () => {
-    if (selected === "B") {
-      setResult("✅ Correct! 1/2 + 1/4 = 3/4");
-    } else {
-      setResult("❌ Incorrect. Correct Answer: B (3/4)");
-    }
-  };
-
   return (
-    <main className="min-h-screen p-8 max-w-3xl mx-auto">
-      <h1 className="text-4xl font-bold text-center">
-        AI Quiz
-      </h1>
-
-      <div className="mt-8 border rounded-xl p-6">
-        <h2 className="text-2xl font-semibold mb-4">
-          What is 1/2 + 1/4 ?
-        </h2>
-
-        <div className="space-y-3">
-          <label className="block">
-            <input
-              type="radio"
-              name="quiz"
-              value="A"
-              onChange={(e) => setSelected(e.target.value)}
-            /> A. 2/6
-          </label>
-
-          <label className="block">
-            <input
-              type="radio"
-              name="quiz"
-              value="B"
-              onChange={(e) => setSelected(e.target.value)}
-            /> B. 3/4
-          </label>
-
-          <label className="block">
-            <input
-              type="radio"
-              name="quiz"
-              value="C"
-              onChange={(e) => setSelected(e.target.value)}
-            /> C. 1/6
-          </label>
-
-          <label className="block">
-            <input
-              type="radio"
-              name="quiz"
-              value="D"
-              onChange={(e) => setSelected(e.target.value)}
-            /> D. 2/4
-          </label>
-        </div>
-
-        <button
-          onClick={checkAnswer}
-          className="mt-6 bg-black text-white px-6 py-3 rounded-lg"
-        >
-          Submit Answer
-        </button>
-
-        {result && (
-          <div className="mt-6 p-4 border rounded-lg">
-            {result}
-          </div>
-        )}
+    <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
+      <div className="mb-6 sm:mb-8">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+          <QuizIcon className="h-4 w-4" />
+          Quiz
+        </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+          Apna imtihan lein
+        </h1>
+        <p className="mt-2 max-w-2xl text-muted">
+          Subject chunein aur {QUESTIONS_PER_ROUND} sawal hal karein. Har jawab par
+          turant feedback milega, aur aakhir mein score aur report banegi.
+        </p>
       </div>
+
+      <QuizClient />
     </main>
   );
 }
