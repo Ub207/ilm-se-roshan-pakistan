@@ -21,7 +21,7 @@ export default function AssessmentPage() {
         <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
           Learning assessment
         </h1>
-        <p className="mt-2 max-w-2xl text-muted">
+        <p className="mt-2.5 max-w-2xl leading-relaxed text-muted">
           Yeh report aap ke quiz attempts se banti hai — isi browser mein mehfooz
           rehti hai, kisi server par nahi jati.
         </p>

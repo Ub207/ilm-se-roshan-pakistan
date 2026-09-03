@@ -37,12 +37,12 @@ export default async function TutorPage({ searchParams }: PageProps<"/tutor">) {
         <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
           {subject ? `${subject} — koi bhi topic poochho` : "Koi bhi topic poochho"}
         </h1>
-        <p className="mt-2 max-w-2xl text-muted">
+        <p className="mt-2.5 max-w-2xl leading-relaxed text-muted">
           Aap topic likhein, AI aap ko simple English aur Roman Urdu mein samjhayega —
           phir 3 practice questions aur agla lesson bhi dega.
         </p>
         {subject && (
-          <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-pk-200 bg-pk-50 px-3 py-1 text-sm font-medium text-pk-800 dark:border-pk-800 dark:bg-pk-950 dark:text-pk-200">
+          <p className="mt-3.5 inline-flex min-h-9 items-center gap-2 rounded-full border border-pk-200 bg-pk-50 px-3.5 py-1 text-sm font-medium text-pk-800 dark:border-pk-800 dark:bg-pk-950 dark:text-pk-200">
             <CapIcon className="h-4 w-4" />
             Subject: {subject}
           </p>

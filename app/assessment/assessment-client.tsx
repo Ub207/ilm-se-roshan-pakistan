@@ -38,7 +38,7 @@ export default function AssessmentClient() {
       <div className="rounded-2xl border border-hairline bg-surface p-6 text-center shadow-clay sm:p-8">
         <QuizIcon className="mx-auto h-8 w-8 text-pk-700 dark:text-pk-300" />
         <h2 className="mt-3 text-lg font-semibold">Abhi koi record nahi hai</h2>
-        <p className="mx-auto mt-1.5 max-w-md text-sm text-muted">
+        <p className="mx-auto mt-1.5 max-w-md text-sm leading-relaxed text-muted">
           Ek quiz mukammal karein — uske baad score, strong areas, weak areas aur
           agla lesson yahan aa jayega.
         </p>
@@ -124,7 +124,7 @@ export default function AssessmentClient() {
             ? summary.nextLesson.topic
             : "Naya topic try karein"}
         </h2>
-        <p className="mt-1 text-sm text-foreground/80">
+        <p className="mt-1 max-w-prose text-sm leading-relaxed text-foreground/80">
           {summary.nextLesson
             ? `${summary.nextLesson.subject} — is topic mein ${summary.nextLesson.correct}/${summary.nextLesson.total} sahi hue. Tutor se dobara samjhein.`
             : "Sab topics theek ja rahe hain. Koi naya topic tutor se poochhein."}

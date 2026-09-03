@@ -170,7 +170,7 @@ export default function QuizClient() {
 
           <div aria-live="polite">
             {answered && (
-              <p className="mt-3.5 flex gap-2.5 rounded-xl bg-pk-50 px-3.5 py-2.5 text-sm text-pk-900 dark:bg-pk-950 dark:text-pk-100">
+              <p className="mt-3.5 flex gap-2.5 rounded-xl bg-pk-50 px-3.5 py-2.5 text-sm leading-relaxed text-pk-900 dark:bg-pk-950 dark:text-pk-100">
                 <span className="mt-0.5 shrink-0">
                   {chosen === question.correctIndex ? (
                     <CheckIcon className="h-4 w-4" />
@@ -212,10 +212,16 @@ export default function QuizClient() {
 
   return (
     <div className="space-y-4">
-      <section className="rounded-2xl border border-pk-200 bg-pk-50 p-5 text-center shadow-clay sm:p-6 dark:border-pk-800 dark:bg-pk-950/60">
-        <p className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+      <section
+        aria-labelledby="result-heading"
+        className="rounded-2xl border border-pk-200 bg-pk-50 p-5 text-center shadow-clay sm:p-6 dark:border-pk-800 dark:bg-pk-950/60"
+      >
+        <h2
+          id="result-heading"
+          className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300"
+        >
           Result — {scope}
-        </p>
+        </h2>
         <p className="mt-2 text-5xl font-bold tracking-tight">
           {correctCount}
           <span className="text-2xl font-semibold text-muted">/{total}</span>

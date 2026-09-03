@@ -9,6 +9,7 @@ import OpenAI, { APIError } from "openai";
 import {
   MCQ_COUNT,
   parseTutorLesson,
+  shuffleMcqOptions,
   type TutorErrorCode,
   type TutorLesson,
 } from "@/lib/tutor";
@@ -233,7 +234,8 @@ async function requestLesson(
     );
   }
 
-  return lesson;
+  // Break the models' habit of always listing the correct option first.
+  return { ...lesson, mcqs: lesson.mcqs.map(shuffleMcqOptions) };
 }
 
 /**

@@ -57,10 +57,44 @@ export type TutorSuccess = TutorLesson & {
 export type TutorFailure = {
   ok: false;
   code: TutorErrorCode;
+  /** Student-facing, already translated. Safe to render as-is. */
   error: string;
+  /** Raw upstream text. Development only — never sent in production. */
+  detail?: string;
 };
 
 export type TutorApiResponse = TutorSuccess | TutorFailure;
+
+/**
+ * What the student reads when a lesson fails.
+ *
+ * Upstream messages are written for developers ("429 Rate limit exceeded:
+ * free-models-per-day. Add 10 credits...") and leak account billing detail, so
+ * they never reach the browser in production — the route logs them and sends one
+ * of these instead, in the same Roman-Urdu register as the rest of the app.
+ */
+const TUTOR_ERROR_MESSAGES: Record<TutorErrorCode, string> = {
+  BAD_INPUT: "Topic theek nahi laga. Ek chhota, saaf topic likhein — jaise Pendulum.",
+  MISSING_KEY:
+    "Tutor abhi configure nahi hua. Admin ko batayein ke API key set karni hai.",
+  NO_CREDITS:
+    "AI ka aaj ka free quota khatam ho gaya. Tab tak Quiz aur Report chalte rahenge — kal dobara try karein.",
+  RATE_LIMITED:
+    "Bohat requests aa gayi hain. Ek minute rukein, phir dobara try karein.",
+  UNAUTHORIZED:
+    "AI service ne request qubool nahi ki. Admin ko API key check karni hogi.",
+  TIMEOUT:
+    "AI ne waqt par jawab nahi diya. Dobara try karein — aksar doosri koshish chal jati hai.",
+  BAD_SHAPE:
+    "AI ka jawab adhoora aaya. Dobara try karein, ya topic thora simple likhein.",
+  UPSTREAM:
+    "AI service se baat nahi ho saki. Thori der baad dobara koshish karein.",
+};
+
+/** Never throws: an unknown code falls back to the generic upstream message. */
+export function studentErrorMessage(code: TutorErrorCode): string {
+  return TUTOR_ERROR_MESSAGES[code] ?? TUTOR_ERROR_MESSAGES.UPSTREAM;
+}
 
 /** Longest topic we forward upstream, to bound prompt size and cost. */
 export const MAX_TOPIC_LENGTH = 120;
@@ -148,4 +182,25 @@ export function parseTutorLesson(
   };
 
   return { topic, explanation, mcqs, nextLesson };
+}
+
+/**
+ * Fisher-Yates over one question's options, with `correctIndex` following the
+ * answer to its new slot.
+ *
+ * Every model tested puts the correct choice first, so an unshuffled lesson is
+ * answerable with "always pick A" — the practice questions only teach something
+ * once the position is random. Kept out of `parseTutorLesson` so validation stays
+ * deterministic; the OpenRouter client applies this after a lesson validates.
+ */
+export function shuffleMcqOptions(mcq: TutorMcq): TutorMcq {
+  const answer = mcq.options[mcq.correctIndex];
+  const options = [...mcq.options];
+
+  for (let i = options.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+
+  return { ...mcq, options, correctIndex: options.indexOf(answer) };
 }

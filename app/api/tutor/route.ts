@@ -2,6 +2,7 @@ import { generateLesson, resolveModels, TutorError } from "@/lib/openrouter";
 import {
   MAX_TOPIC_LENGTH,
   isSubject,
+  studentErrorMessage,
   type TutorErrorCode,
   type TutorFailure,
   type TutorSuccess,
@@ -12,6 +13,8 @@ export const dynamic = "force-dynamic";
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 12;
+
+const isDev = process.env.NODE_ENV !== "production";
 
 /**
  * Per-instance limiter. Enough to stop a stuck client from draining the
@@ -38,30 +41,32 @@ function clientKey(request: Request): string {
   return forwarded?.split(",")[0]?.trim() || "local";
 }
 
-function fail(
-  code: TutorErrorCode,
-  error: string,
-  status: number,
-): Response {
-  return Response.json({ ok: false, code, error } satisfies TutorFailure, {
-    status,
-  });
+/**
+ * `detail` carries the raw upstream text — useful while developing, but it names
+ * models and account limits, so it is dropped in production and the student only
+ * ever sees the translated `error`.
+ */
+function fail(code: TutorErrorCode, status: number, detail?: string): Response {
+  const body: TutorFailure = {
+    ok: false,
+    code,
+    error: studentErrorMessage(code),
+    ...(isDev && detail ? { detail } : {}),
+  };
+
+  return Response.json(body, { status });
 }
 
 export async function POST(request: Request): Promise<Response> {
   if (isRateLimited(clientKey(request))) {
-    return fail(
-      "RATE_LIMITED",
-      "Too many requests. Wait a minute and try again.",
-      429,
-    );
+    return fail("RATE_LIMITED", 429, "Local rate limit: 12 requests per minute.");
   }
 
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return fail("BAD_INPUT", "Request body must be valid JSON.", 400);
+    return fail("BAD_INPUT", 400, "Request body must be valid JSON.");
   }
 
   const record =
@@ -73,8 +78,8 @@ export async function POST(request: Request): Promise<Response> {
   if (typeof rawTopic !== "string" || rawTopic.trim().length === 0) {
     return fail(
       "BAD_INPUT",
-      "Send a non-empty `topic` string, for example { \"topic\": \"Pendulum\" }.",
       400,
+      'Send a non-empty `topic` string, for example { "topic": "Pendulum" }.',
     );
   }
 
@@ -90,14 +95,16 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ ok: true, model, ...lesson } satisfies TutorSuccess);
   } catch (error: unknown) {
     if (error instanceof TutorError) {
-      return fail(error.code, error.message, error.status);
+      // Always logged in full, regardless of what the browser is told.
+      console.error(`[tutor] request failed (${error.code}): ${error.message}`);
+      return fail(error.code, error.status, error.message);
     }
 
     console.error("[tutor] unexpected failure", error);
     return fail(
       "UPSTREAM",
-      "Unexpected server error while generating the lesson.",
       500,
+      "Unexpected server error while generating the lesson.",
     );
   }
 }

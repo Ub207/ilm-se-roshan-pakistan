@@ -22,7 +22,7 @@ export default function QuizPage() {
         <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
           Apna imtihan lein
         </h1>
-        <p className="mt-2 max-w-2xl text-muted">
+        <p className="mt-2.5 max-w-2xl leading-relaxed text-muted">
           Subject chunein aur {QUESTIONS_PER_ROUND} sawal hal karein. Har jawab par
           turant feedback milega, aur aakhir mein score aur report banegi.
         </p>

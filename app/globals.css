@@ -38,6 +38,7 @@
   --color-muted: var(--muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-lexend);
 }
 
 :root {
@@ -63,6 +64,39 @@ body {
   color: var(--foreground);
   /* Geist is loaded in app/layout.tsx and exposed as --font-geist-sans. */
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  /*
+   * Two-font system: Lexend for headings, Geist for body copy. Lexend was
+   * designed to improve reading proficiency, which is exactly the audience here
+   * (grades 5-10, often reading English as a second language). Declared in the
+   * base layer so the `font-sans` / `font-mono` utilities can still override it.
+   */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family:
+      var(--font-lexend), var(--font-geist-sans), ui-sans-serif, system-ui,
+      sans-serif;
+    letter-spacing: -0.015em;
+  }
+
+  /*
+   * The header is sticky, so an anchor jump (including the skip link to #main)
+   * would otherwise land underneath it. Mobile stacks the nav onto a second row,
+   * hence the taller offset below the md breakpoint.
+   */
+  html {
+    scroll-padding-top: 7.5rem;
+  }
+
+  @media (min-width: 48rem) {
+    html {
+      scroll-padding-top: 5rem;
+    }
+  }
 }
 
 /* One consistent, visible focus ring for keyboard users across the app. */

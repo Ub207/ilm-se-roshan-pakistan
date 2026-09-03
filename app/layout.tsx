@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
+import { Geist, Geist_Mono, Lexend } from "next/font/google";
 import "./globals.css";
+
+import SiteFooter from "@/components/site-footer";
+import SiteHeader from "@/components/site-header";
+import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,27 +16,39 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+/**
+ * Display face for headings. Lexend was designed to raise reading proficiency,
+ * which suits an audience of grade 5-10 students reading English as a second
+ * language. Applied to h1-h4 in globals.css, not per-component.
+ */
+const lexend = Lexend({
+  variable: "--font-lexend",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "Ilm Se Roshan Pakistan — AI Learning Companion",
-    template: "%s | Ilm Se Roshan Pakistan",
+    default: `${SITE_NAME} — AI Learning Companion`,
+    template: `%s | ${SITE_NAME}`,
   },
   description:
     "AI tutor for Pakistani students. Any topic explained in simple English and Roman Urdu, with practice MCQs and a suggested next lesson.",
+  applicationName: SITE_NAME,
+  openGraph: {
+    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    description:
+      "Any topic explained in simple English and Roman Urdu, with practice MCQs, quizzes, and a progress report. Free, no login.",
+    siteName: SITE_NAME,
+    type: "website",
+  },
 };
-
-const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/tutor", label: "AI Tutor" },
-  { href: "/quiz", label: "Quiz" },
-  { href: "/assessment", label: "Report" },
-] as const;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <a
@@ -43,50 +58,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
 
-        <header className="sticky top-0 z-40 border-b border-hairline bg-surface/85 backdrop-blur">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3 sm:px-6">
-            <Link href="/" className="flex items-center gap-2.5 rounded-lg">
-              <span
-                aria-hidden="true"
-                className="grid h-9 w-9 place-items-center rounded-xl bg-pk-900 font-mono text-xs font-bold tracking-tight text-white"
-              >
-                IRP
-              </span>
-              <span className="text-sm font-semibold leading-tight sm:text-base">
-                Ilm Se Roshan Pakistan
-              </span>
-            </Link>
-
-            <nav aria-label="Main">
-              <ul className="flex items-center gap-1 text-sm font-medium">
-                {NAV_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="block rounded-lg px-2.5 py-1.5 text-muted transition-colors hover:bg-pk-50 hover:text-pk-800 sm:px-3 dark:hover:bg-pk-950 dark:hover:text-pk-200"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-        </header>
+        <SiteHeader />
 
         <div id="main" className="flex-1">
           {children}
         </div>
 
-        <footer className="border-t border-hairline">
-          <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-8 text-sm text-muted sm:px-6">
-            <p className="font-medium text-foreground">
-              Ilm Se Roshan Pakistan
-            </p>
-            <p>Har bacha, har topic, har waqt — AI ke saath seekho.</p>
-          </div>
-        </footer>
+        <SiteFooter />
       </body>
     </html>
   );
 }
+
