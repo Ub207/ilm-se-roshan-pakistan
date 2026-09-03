@@ -15,6 +15,7 @@ import { McqOption, OPTION_LETTERS } from "@/components/mcq-option";
 import { saveAttempt, type AttemptAnswer } from "@/lib/progress";
 import {
   ALL_SUBJECTS,
+  QUESTIONS_PER_ROUND,
   QUIZ_SCOPES,
   buildRound,
   gradeLabel,
@@ -66,18 +67,22 @@ export default function QuizClient() {
 
   if (phase === "setup") {
     return (
-      <div className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
+      <div className="card card-pad">
         <fieldset>
           <legend className="text-base font-semibold">Subject chunein</legend>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <p className="mt-1 text-sm leading-relaxed text-muted">
+            Har round mein {QUESTIONS_PER_ROUND} sawaal aate hain. &ldquo;All
+            subjects&rdquo; chunein to har subject se ek sawaal milta hai.
+          </p>
+          <div className="mt-3.5 flex flex-wrap gap-2">
             {QUIZ_SCOPES.map((option) => {
               const active = scope === option;
               return (
                 <label
                   key={option}
-                  className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-200 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-pk-600 ${
+                  className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 py-2 text-sm font-medium transition-all duration-150 ease-clay focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-pk-600 ${
                     active
-                      ? "border-pk-900 bg-pk-900 text-white"
+                      ? "border-pk-900 bg-pk-900 text-white shadow-clay dark:border-pk-400"
                       : "border-hairline hover:border-pk-400 hover:bg-pk-50 dark:hover:bg-pk-950"
                   }`}
                 >
@@ -99,7 +104,7 @@ export default function QuizClient() {
         <button
           type="button"
           onClick={() => start(scope)}
-          className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl bg-pk-900 px-5 py-2.5 font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px"
+          className="btn btn-lg btn-primary mt-5"
         >
           Quiz shuru karein
           <ArrowRightIcon className="h-5 w-5" />
@@ -122,24 +127,18 @@ export default function QuizClient() {
       <div className="space-y-4">
         <div>
           <div className="flex items-baseline justify-between gap-3 text-sm">
-            <p className="font-medium">
-              Sawal {index + 1} / {questions.length}
+            <p className="font-medium tabular-nums">
+              Sawaal {index + 1} / {questions.length}
             </p>
             <p className="text-muted">{scope}</p>
           </div>
-          <div
-            aria-hidden="true"
-            className="mt-2 h-2 overflow-hidden rounded-full bg-pk-100 dark:bg-pk-950"
-          >
-            <div
-              className="h-full rounded-full bg-pk-700 transition-all duration-300 dark:bg-pk-400"
-              style={{ width: `${progress}%` }}
-            />
+          <div aria-hidden="true" className="track mt-2">
+            <div className="track-fill" style={{ width: `${progress}%` }} />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
-          <p className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+        <div className="card card-pad">
+          <p className="eyebrow">
             {question.subject} · {question.topic}
           </p>
 
@@ -170,7 +169,7 @@ export default function QuizClient() {
 
           <div aria-live="polite">
             {answered && (
-              <p className="mt-3.5 flex gap-2.5 rounded-xl bg-pk-50 px-3.5 py-2.5 text-sm leading-relaxed text-pk-900 dark:bg-pk-950 dark:text-pk-100">
+              <p className="mt-3.5 flex gap-2.5 rounded-control bg-pk-50 px-3.5 py-2.5 text-sm leading-relaxed text-pk-900 dark:bg-pk-950 dark:text-pk-100">
                 <span className="mt-0.5 shrink-0">
                   {chosen === question.correctIndex ? (
                     <CheckIcon className="h-4 w-4" />
@@ -194,9 +193,9 @@ export default function QuizClient() {
             type="button"
             disabled={!answered}
             onClick={() => (isLast ? finish() : setIndex(index + 1))}
-            className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-xl bg-pk-900 px-5 py-2.5 font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+            className="btn btn-lg btn-primary mt-4"
           >
-            {isLast ? "Result dekhein" : "Agla sawal"}
+            {isLast ? "Result dekhein" : "Agla sawaal"}
             <ArrowRightIcon className="h-5 w-5" />
           </button>
         </div>
@@ -211,29 +210,44 @@ export default function QuizClient() {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="animate-rise space-y-4">
       <section
         aria-labelledby="result-heading"
-        className="rounded-2xl border border-pk-200 bg-pk-50 p-5 text-center shadow-clay sm:p-6 dark:border-pk-800 dark:bg-pk-950/60"
+        className="card-accent card-pad text-center"
       >
-        <h2
-          id="result-heading"
-          className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300"
-        >
+        <h2 id="result-heading" className="eyebrow justify-center">
           Result — {scope}
         </h2>
-        <p className="mt-2 text-5xl font-bold tracking-tight">
-          {correctCount}
-          <span className="text-2xl font-semibold text-muted">/{total}</span>
+
+        {/*
+          The ring is decoration over the same numbers stated below it, so it is
+          hidden from screen readers. Its two stops are CSS variables because an
+          inline `conic-gradient` cannot carry a `dark:` variant.
+        */}
+        <div
+          aria-hidden="true"
+          className="mx-auto mt-4 grid h-32 w-32 place-items-center rounded-full"
+          style={{
+            background: `conic-gradient(var(--score-fill) ${percent}%, var(--score-track) 0)`,
+          }}
+        >
+          <div className="grid h-26 w-26 place-items-center rounded-full bg-surface">
+            <p className="text-3xl font-bold tracking-tight tabular-nums">
+              {percent}%
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-3.5 text-lg font-semibold tabular-nums">
+          {correctCount} / {total} sahi
         </p>
-        <p className="mt-1 text-lg font-semibold">{percent}%</p>
         <p className="mt-1 text-muted">{gradeLabel(percent)}</p>
 
         <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
           <button
             type="button"
             onClick={() => start(scope)}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-pk-900 px-5 py-2.5 font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px"
+            className="btn btn-primary"
           >
             <RetryIcon className="h-5 w-5" />
             Dobara koshish karein
@@ -241,24 +255,18 @@ export default function QuizClient() {
           <button
             type="button"
             onClick={() => setPhase("setup")}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-hairline bg-surface px-5 py-2.5 font-semibold transition-colors duration-200 hover:border-pk-400"
+            className="btn btn-secondary"
           >
             Naya subject
           </button>
-          <Link
-            href="/assessment"
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-hairline bg-surface px-5 py-2.5 font-semibold transition-colors duration-200 hover:border-pk-400"
-          >
+          <Link href="/assessment" className="btn btn-secondary">
             <ChartIcon className="h-5 w-5" />
             Report dekhein
           </Link>
         </div>
       </section>
 
-      <section
-        aria-labelledby="review-heading"
-        className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6"
-      >
+      <section aria-labelledby="review-heading" className="card card-pad">
         <h2 id="review-heading" className="text-lg font-semibold">
           Review
         </h2>
@@ -270,7 +278,7 @@ export default function QuizClient() {
             return (
               <li
                 key={question.id}
-                className="flex items-start gap-2.5 rounded-xl border border-hairline p-3.5"
+                className="flex items-start gap-2.5 rounded-control border border-hairline p-3.5"
               >
                 <span
                   className={`mt-0.5 shrink-0 ${ok ? "text-pk-700 dark:text-pk-300" : "text-red-600 dark:text-red-400"}`}
@@ -304,18 +312,18 @@ export default function QuizClient() {
       </section>
 
       {firstWrong && (
-        <section className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
-          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+        <section className="card card-pad">
+          <p className="eyebrow">
             <TargetIcon className="h-4 w-4" />
             Yahan kami rah gayi
           </p>
           <h2 className="mt-1.5 text-lg font-semibold">{firstWrong.topic}</h2>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm leading-relaxed text-muted">
             AI Tutor se yeh topic dobara samjhein, phir quiz repeat karein.
           </p>
           <Link
             href={`/tutor?subject=${encodeURIComponent(firstWrong.subject)}&topic=${encodeURIComponent(firstWrong.topic)}`}
-            className="mt-3.5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-pk-700 px-4 py-2 text-sm font-semibold text-pk-800 transition-colors duration-200 hover:bg-pk-50 dark:border-pk-400 dark:text-pk-200 dark:hover:bg-pk-950"
+            className="btn btn-outline mt-3.5"
           >
             Tutor se samjhein
             <ArrowRightIcon className="h-4 w-4" />

@@ -5,14 +5,15 @@ import {
   ArrowRightIcon,
   BoltIcon,
   BookIcon,
-  CapIcon,
   ChartIcon,
   CheckIcon,
   ClockIcon,
   GlobeIcon,
+  HeartIcon,
   QuizIcon,
   SignalIcon,
   SparkIcon,
+  SUBJECT_ICONS,
   TargetIcon,
 } from "@/components/icons";
 import { QUIZ_QUESTIONS } from "@/lib/quiz";
@@ -33,13 +34,12 @@ const HERO_STATS = [
   { value: "Free", label: "Koi login nahi" },
 ] as const;
 
-
 const SUBJECT_BLURBS: Record<Subject, string> = {
   Mathematics: "Fractions, algebra, geometry — step by step.",
   Science: "Physics, chemistry aur biology ke concepts.",
   English: "Grammar, tenses, essays aur vocabulary.",
   Urdu: "Grammar, nazm, aur likhne ki mashq.",
-  Islamiat: "Salah, Seerat aur akhlaq ke asaan sabaq.",
+  Islamiat: "Salah, Seerat aur akhlaq ke aasan sabaq.",
 };
 
 const STEPS = [
@@ -61,7 +61,7 @@ const FEATURES = [
   {
     Icon: SparkIcon,
     title: "Live AI tutoring",
-    body: "Har jawab AI se banta hai — koi ratta-maar list nahi.",
+    body: "Har lesson AI live banata hai — pehle se likha hua jawab nahi.",
   },
   {
     Icon: QuizIcon,
@@ -108,8 +108,8 @@ const BENEFITS = [
   },
   {
     Icon: TargetIcon,
-    title: "Kamzori khud pakri jati hai",
-    body: "Report batati hai kaunsa topic weak hai aur agla kya parhna hai — andaza lagane ki zaroorat nahi.",
+    title: "Kamzori ka khud pata chal jata hai",
+    body: "Report batati hai kaun sa topic weak hai aur agla kya parhna hai — andaza lagane ki zaroorat nahi.",
   },
   {
     Icon: SignalIcon,
@@ -144,30 +144,21 @@ export default function Home() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-muted sm:text-xl">
-            Har bacha, har topic, har waqt. Koi bhi sawal likhein aur AI se simple
-            English aur Roman Urdu mein samjhein — phir practice questions se
-            check karein ke yaad hua ya nahi.
+            Har bacha, har topic, har waqt. Koi bhi sawaal likhein aur AI se
+            simple English aur Roman Urdu mein samjhein — phir practice questions
+            se check karein ke yaad hua ya nahi.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/tutor"
-              className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-pk-900 px-6 py-3 font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px"
-            >
+            <Link href="/tutor" className="btn btn-lg btn-primary">
               <BookIcon className="h-5 w-5" />
               Start Learning
             </Link>
-            <Link
-              href="/quiz"
-              className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-hairline bg-surface px-6 py-3 font-semibold shadow-clay transition-all duration-200 hover:border-pk-400 hover:shadow-clay-lg active:translate-y-px"
-            >
+            <Link href="/quiz" className="btn btn-lg btn-secondary">
               <QuizIcon className="h-5 w-5" />
               Take Quiz
             </Link>
-            <Link
-              href="/assessment"
-              className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-hairline bg-surface px-6 py-3 font-semibold shadow-clay transition-all duration-200 hover:border-pk-400 hover:shadow-clay-lg active:translate-y-px"
-            >
+            <Link href="/assessment" className="btn btn-lg btn-quiet">
               <ChartIcon className="h-5 w-5" />
               View Report
             </Link>
@@ -175,10 +166,7 @@ export default function Home() {
 
           <dl className="mx-auto mt-12 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
             {HERO_STATS.map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-2xl border border-hairline bg-surface px-3 py-4 shadow-clay"
-              >
+              <div key={stat.label} className="card px-3 py-4">
                 <dt className="sr-only">{stat.label}</dt>
                 <dd>
                   <span className="block text-2xl font-bold tracking-tight text-pk-800 dark:text-pk-300">
@@ -202,7 +190,8 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+              <p className="eyebrow">
+                <HeartIcon className="h-4 w-4" />
                 Kyun zaroori hai?
               </p>
               <h2
@@ -214,7 +203,7 @@ export default function Home() {
               <p className="mt-3 max-w-prose leading-relaxed text-muted">
                 Jo bache school mein hain un ke liye bhi — ek teacher ke saamne
                 40-50 bache hain, tuition mehnga hai, aur kamzori ka pata tab
-                chalta hai jab exam mein number kam aayein.
+                chalta hai jab exam mein number kam aate hain.
               </p>
               <p className="mt-3 max-w-prose leading-relaxed text-muted">
                 Yeh app us khali jagah ko bharti hai: koi bhi topic poochein,
@@ -232,9 +221,9 @@ export default function Home() {
               ].map((item) => (
                 <li
                   key={item.label}
-                  className="flex items-center gap-4 rounded-2xl border border-hairline bg-background p-4"
+                  className="flex items-center gap-4 rounded-card border border-hairline bg-background p-4"
                 >
-                  <span className="shrink-0 text-2xl font-bold tracking-tight text-pk-800 dark:text-pk-300">
+                  <span className="shrink-0 text-xl font-bold tracking-tight tabular-nums text-pk-800 sm:text-2xl dark:text-pk-300">
                     {item.stat}
                   </span>
                   <span className="text-sm leading-relaxed text-muted">
@@ -252,7 +241,8 @@ export default function Home() {
         className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16"
       >
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+          <p className="eyebrow justify-center">
+            <BookIcon className="h-4 w-4" />
             Subjects
           </p>
           <h2
@@ -267,26 +257,30 @@ export default function Home() {
         </div>
 
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SUBJECTS.map((subject) => (
-            <li key={subject}>
-              <Link
-                href={`/tutor?subject=${encodeURIComponent(subject)}`}
-                className="group flex h-full cursor-pointer flex-col rounded-2xl border border-hairline bg-surface p-5 shadow-clay transition-all duration-200 hover:-translate-y-0.5 hover:border-pk-400 hover:shadow-clay-lg active:translate-y-0"
-              >
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-pk-50 text-pk-800 transition-colors duration-200 group-hover:bg-pk-100 dark:bg-pk-950 dark:text-pk-200">
-                  <CapIcon className="h-6 w-6" />
-                </span>
-                <h3 className="mt-3.5 text-lg font-semibold">{subject}</h3>
-                <p className="mt-1 text-sm text-muted">
-                  {SUBJECT_BLURBS[subject]}
-                </p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-pk-800 dark:text-pk-200">
-                  Start learning
-                  <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                </span>
-              </Link>
-            </li>
-          ))}
+          {SUBJECTS.map((subject) => {
+            const Icon = SUBJECT_ICONS[subject];
+
+            return (
+              <li key={subject}>
+                <Link
+                  href={`/tutor?subject=${encodeURIComponent(subject)}`}
+                  className="card card-pad card-lift group flex h-full flex-col"
+                >
+                  <span className="medallion transition-colors duration-200 group-hover:bg-pk-100 dark:group-hover:bg-pk-900">
+                    <Icon className="h-6 w-6" />
+                  </span>
+                  <h3 className="mt-3.5 text-lg font-semibold">{subject}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">
+                    {SUBJECT_BLURBS[subject]}
+                  </p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-pk-800 dark:text-pk-200">
+                    Start learning
+                    <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </section>
 
@@ -296,7 +290,8 @@ export default function Home() {
       >
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
           <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+            <p className="eyebrow justify-center">
+              <BoltIcon className="h-4 w-4" />
               How it works
             </p>
             <h2
@@ -311,7 +306,7 @@ export default function Home() {
             {STEPS.map((step, index) => (
               <li
                 key={step.title}
-                className="rounded-2xl border border-hairline bg-background p-5"
+                className="rounded-card border border-hairline bg-background p-5"
               >
                 <span
                   aria-hidden="true"
@@ -334,7 +329,8 @@ export default function Home() {
         className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16"
       >
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+          <p className="eyebrow justify-center">
+            <SparkIcon className="h-4 w-4" />
             Features
           </p>
           <h2
@@ -351,10 +347,7 @@ export default function Home() {
 
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map(({ Icon, title, body }) => (
-            <li
-              key={title}
-              className="flex gap-3.5 rounded-2xl border border-hairline bg-surface p-5 shadow-clay transition-all duration-200 hover:-translate-y-0.5 hover:shadow-clay-lg"
-            >
+            <li key={title} className="card card-pad flex gap-3.5">
               <span className="mt-0.5 shrink-0 text-pk-700 dark:text-pk-300">
                 <Icon className="h-6 w-6" />
               </span>
@@ -374,7 +367,8 @@ export default function Home() {
       >
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-16 lg:grid-cols-2 lg:items-center lg:gap-14">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+            <p className="eyebrow">
+              <TargetIcon className="h-4 w-4" />
               Benefits
             </p>
             <h2
@@ -384,14 +378,14 @@ export default function Home() {
               Student ko asal mein kya milta hai?
             </h2>
             <p className="mt-2 max-w-prose leading-relaxed text-muted">
-              Pakistan mein ek teacher ke zimme dozens bache hote hain, aur tuition
-              har ghar ka budget nahi. Yeh app woh khali jagah bharti hai.
+              Pakistan mein ek teacher ke zimme darjanon bache hote hain, aur
+              tuition har ghar ka budget nahi. Yeh app woh khali jagah bharti hai.
             </p>
 
             <ul className="mt-7 space-y-5">
               {BENEFITS.map(({ Icon, title, body }) => (
                 <li key={title} className="flex gap-4">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-pk-50 text-pk-800 shadow-clay dark:bg-pk-950 dark:text-pk-200">
+                  <span className="medallion shadow-clay">
                     <Icon className="h-6 w-6" />
                   </span>
                   <div>
@@ -406,9 +400,9 @@ export default function Home() {
           </div>
 
           {/* Static preview of the real /assessment output — shows, not tells. */}
-          <div className="rounded-3xl border border-pk-200 bg-pk-50 p-5 shadow-clay sm:p-7 dark:border-pk-800 dark:bg-pk-950/60">
+          <div className="card-accent rounded-panel p-5 sm:p-7">
             <div className="flex items-baseline justify-between gap-3">
-              <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+              <p className="eyebrow">
                 <ChartIcon className="h-4 w-4" />
                 Report ka namoona
               </p>
@@ -417,7 +411,7 @@ export default function Home() {
 
             <ul className="mt-4 space-y-3.5">
               {SAMPLE_REPORT.map((row) => (
-                <li key={row.topic} className="rounded-2xl bg-surface p-3.5">
+                <li key={row.topic} className="rounded-card bg-surface p-3.5">
                   <div className="flex items-baseline justify-between gap-3 text-sm">
                     <span className="min-w-0 font-medium">
                       {row.topic}{" "}
@@ -427,12 +421,9 @@ export default function Home() {
                       {row.percent}%
                     </span>
                   </div>
-                  <div
-                    aria-hidden="true"
-                    className="mt-2 h-2 overflow-hidden rounded-full bg-pk-100 dark:bg-pk-950"
-                  >
+                  <div aria-hidden="true" className="track mt-2">
                     <div
-                      className="h-full rounded-full bg-pk-700 dark:bg-pk-400"
+                      className="track-fill"
                       style={{ width: `${row.percent}%` }}
                     />
                   </div>
@@ -442,7 +433,7 @@ export default function Home() {
 
             <p className="mt-4 flex items-start gap-2 text-sm text-foreground/80">
               <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-pk-700 dark:text-pk-300" />
-              Weak topic seedha AI Tutor ke saath jurta hai, taake agla step clear
+              Weak topic seedha AI Tutor se jur jata hai, taake agla step clear
               ho.
             </p>
           </div>
@@ -451,9 +442,11 @@ export default function Home() {
 
       {/* CALL TO ACTION */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="rounded-3xl border border-pk-200 bg-linear-to-b from-pk-50 to-pk-100/50 px-6 py-10 text-center shadow-clay sm:px-10 sm:py-14 dark:border-pk-800 dark:from-pk-950/60 dark:to-pk-950/30">
-          <TargetIcon className="mx-auto h-8 w-8 text-pk-700 dark:text-pk-300" />
-          <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
+        <div className="rounded-panel border border-pk-200 bg-linear-to-b from-pk-50 to-pk-100/50 px-6 py-10 text-center shadow-clay sm:px-10 sm:py-14 dark:border-pk-800 dark:from-pk-950/60 dark:to-pk-950/30">
+          <span className="medallion mx-auto h-12 w-12 bg-surface">
+            <TargetIcon className="h-6 w-6" />
+          </span>
+          <h2 className="mt-3.5 text-2xl font-bold tracking-tight sm:text-3xl">
             Aaj hi ek topic seekhein
           </h2>
           <p className="mx-auto mt-2.5 max-w-xl leading-relaxed text-muted">
@@ -461,17 +454,11 @@ export default function Home() {
             se check karein ke yaad hua ya nahi. Koi login, koi fees nahi.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/tutor"
-              className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-pk-900 px-6 py-3 font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px"
-            >
+            <Link href="/tutor" className="btn btn-lg btn-primary">
               Mujhe Samjhao
               <ArrowRightIcon className="h-5 w-5" />
             </Link>
-            <Link
-              href="/quiz"
-              className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-hairline bg-surface px-6 py-3 font-semibold shadow-clay transition-all duration-200 hover:border-pk-400 hover:shadow-clay-lg active:translate-y-px"
-            >
+            <Link href="/quiz" className="btn btn-lg btn-secondary">
               <QuizIcon className="h-5 w-5" />
               Pehle quiz try karein
             </Link>

@@ -35,17 +35,18 @@ export default function AssessmentClient() {
 
   if (summary.total === 0) {
     return (
-      <div className="rounded-2xl border border-hairline bg-surface p-6 text-center shadow-clay sm:p-8">
-        <QuizIcon className="mx-auto h-8 w-8 text-pk-700 dark:text-pk-300" />
-        <h2 className="mt-3 text-lg font-semibold">Abhi koi record nahi hai</h2>
+      <div className="card p-6 text-center sm:p-8">
+        <span className="medallion mx-auto h-12 w-12">
+          <QuizIcon className="h-6 w-6" />
+        </span>
+        <h2 className="mt-3.5 text-lg font-semibold">
+          Abhi koi record nahi hai
+        </h2>
         <p className="mx-auto mt-1.5 max-w-md text-sm leading-relaxed text-muted">
           Ek quiz mukammal karein — uske baad score, strong areas, weak areas aur
           agla lesson yahan aa jayega.
         </p>
-        <Link
-          href="/quiz"
-          className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl bg-pk-900 px-5 py-2.5 font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px"
-        >
+        <Link href="/quiz" className="btn btn-lg btn-primary mt-5">
           Quiz shuru karein
           <ArrowRightIcon className="h-5 w-5" />
         </Link>
@@ -54,43 +55,44 @@ export default function AssessmentClient() {
   }
 
   return (
-    <div className="space-y-4">
-      <section className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
+    <div className="animate-rise space-y-4">
+      <section className="card card-pad">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold">Overall score</h2>
-            <p className="mt-1 text-sm text-muted">{gradeLabel(summary.percent)}</p>
+            <p className="mt-1 text-sm text-muted">
+              {gradeLabel(summary.percent)}
+            </p>
           </div>
-          <p className="text-4xl font-bold tracking-tight">
+          <p className="text-4xl font-bold tracking-tight tabular-nums">
             {summary.percent}
             <span className="text-xl font-semibold text-muted">%</span>
           </p>
         </div>
 
-        <div
-          aria-hidden="true"
-          className="mt-4 h-2.5 overflow-hidden rounded-full bg-pk-100 dark:bg-pk-950"
-        >
+        <div aria-hidden="true" className="track mt-4">
           <div
-            className="h-full rounded-full bg-pk-700 transition-all duration-300 dark:bg-pk-400"
+            className="track-fill"
             style={{ width: `${summary.percent}%` }}
           />
         </div>
 
         <dl className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
-          <div className="rounded-xl border border-hairline p-3">
+          <div className="rounded-control border border-hairline p-3">
             <dt className="text-muted">Sahi jawab</dt>
-            <dd className="mt-0.5 text-lg font-semibold">
+            <dd className="mt-0.5 text-lg font-semibold tabular-nums">
               {summary.correct} / {summary.total}
             </dd>
           </div>
-          <div className="rounded-xl border border-hairline p-3">
+          <div className="rounded-control border border-hairline p-3">
             <dt className="text-muted">Quiz attempts</dt>
-            <dd className="mt-0.5 text-lg font-semibold">{summary.attempts}</dd>
+            <dd className="mt-0.5 text-lg font-semibold tabular-nums">
+              {summary.attempts}
+            </dd>
           </div>
-          <div className="rounded-xl border border-hairline p-3">
+          <div className="rounded-control border border-hairline p-3">
             <dt className="text-muted">Aakhri quiz</dt>
-            <dd className="mt-0.5 text-lg font-semibold">
+            <dd className="mt-0.5 text-lg font-semibold tabular-nums">
               {summary.lastAttemptAt
                 ? new Date(summary.lastAttemptAt).toLocaleDateString()
                 : "—"}
@@ -114,12 +116,15 @@ export default function AssessmentClient() {
         />
       </div>
 
-      <section className="rounded-2xl border border-pk-200 bg-pk-50 p-5 shadow-clay sm:p-6 dark:border-pk-800 dark:bg-pk-950/60">
-        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+      <section
+        aria-labelledby="next-lesson-heading"
+        className="card-accent card-pad rounded-panel"
+      >
+        <p className="eyebrow">
           <TargetIcon className="h-4 w-4" />
           Recommended next lesson
         </p>
-        <h2 className="mt-1.5 text-lg font-semibold">
+        <h2 id="next-lesson-heading" className="mt-1.5 text-lg font-semibold">
           {summary.nextLesson
             ? summary.nextLesson.topic
             : "Naya topic try karein"}
@@ -127,7 +132,7 @@ export default function AssessmentClient() {
         <p className="mt-1 max-w-prose text-sm leading-relaxed text-foreground/80">
           {summary.nextLesson
             ? `${summary.nextLesson.subject} — is topic mein ${summary.nextLesson.correct}/${summary.nextLesson.total} sahi hue. Tutor se dobara samjhein.`
-            : "Sab topics theek ja rahe hain. Koi naya topic tutor se poochhein."}
+            : "Sab topics theek ja rahe hain. Koi naya topic tutor se poochein."}
         </p>
         <div className="mt-4 flex flex-wrap gap-2.5">
           <Link
@@ -136,15 +141,12 @@ export default function AssessmentClient() {
                 ? `/tutor?subject=${encodeURIComponent(summary.nextLesson.subject)}&topic=${encodeURIComponent(summary.nextLesson.topic)}`
                 : "/tutor"
             }
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-pk-900 px-5 py-2.5 font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px"
+            className="btn btn-primary"
           >
             <BookIcon className="h-5 w-5" />
             Tutor se parhein
           </Link>
-          <Link
-            href="/quiz"
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-hairline bg-surface px-5 py-2.5 font-semibold transition-colors duration-200 hover:border-pk-400"
-          >
+          <Link href="/quiz" className="btn btn-secondary">
             <QuizIcon className="h-5 w-5" />
             Quiz dobara
           </Link>
@@ -165,10 +167,12 @@ type TopicListProps = {
 
 function TopicList({ title, empty, topics, tone }: TopicListProps) {
   const isStrong = tone === "strong";
+  const headingId = `topic-list-${tone}`;
 
   return (
-    <section className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
+    <section aria-labelledby={headingId} className="card card-pad">
       <h2
+        id={headingId}
         className={`flex items-center gap-2 font-semibold ${isStrong ? "text-pk-800 dark:text-pk-200" : "text-amber-700 dark:text-amber-300"}`}
       >
         {isStrong ? (
@@ -180,21 +184,35 @@ function TopicList({ title, empty, topics, tone }: TopicListProps) {
       </h2>
 
       {topics.length === 0 ? (
-        <p className="mt-2 text-sm text-muted">{empty}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{empty}</p>
       ) : (
-        <ul className="mt-3 space-y-2.5">
+        <ul className="mt-3.5 space-y-3">
           {topics.map((stat) => (
-            <li
-              key={`${stat.subject}/${stat.topic}`}
-              className="flex items-baseline justify-between gap-3 text-sm"
-            >
-              <span className="min-w-0">
-                <span className="font-medium">{stat.topic}</span>{" "}
-                <span className="text-muted">· {stat.subject}</span>
-              </span>
-              <span className="shrink-0 font-mono text-xs text-muted">
-                {stat.correct}/{stat.total} · {stat.percent}%
-              </span>
+            <li key={`${stat.subject}/${stat.topic}`}>
+              <div className="flex items-baseline justify-between gap-3 text-sm">
+                <span className="min-w-0">
+                  <span className="font-medium">{stat.topic}</span>{" "}
+                  <span className="text-muted">· {stat.subject}</span>
+                </span>
+                <span className="shrink-0 font-mono text-xs tabular-nums text-muted">
+                  {stat.correct}/{stat.total} · {stat.percent}%
+                </span>
+              </div>
+              {/*
+                Mastery per topic, so a 40% and an 80% weak area do not look
+                alike at a glance. Decoration over the numbers on the same row,
+                hence aria-hidden. The utilities layer beats `.track-fill`'s
+                green, which is how the weak column turns amber.
+              */}
+              <div
+                aria-hidden="true"
+                className={`track mt-1.5 ${isStrong ? "" : "bg-amber-100 dark:bg-amber-950"}`}
+              >
+                <div
+                  className={`track-fill ${isStrong ? "" : "bg-amber-500 dark:bg-amber-400"}`}
+                  style={{ width: `${stat.percent}%` }}
+                />
+              </div>
             </li>
           ))}
         </ul>
@@ -207,7 +225,10 @@ function ResetHistory({ onCleared }: { onCleared: () => void }) {
   const [confirming, setConfirming] = useState(false);
 
   return (
-    <div className="flex flex-wrap items-center gap-3 pt-2">
+    // The wrapper stays mounted across both states, so it can be the live
+    // region: swapping the trigger for the confirmation would otherwise be a
+    // silent change for a screen reader.
+    <div aria-live="polite" className="flex flex-wrap items-center gap-3 pt-2">
       {confirming ? (
         <>
           <p className="text-sm text-muted">
@@ -219,14 +240,14 @@ function ResetHistory({ onCleared }: { onCleared: () => void }) {
               onCleared();
               setConfirming(false);
             }}
-            className="min-h-11 rounded-xl border border-red-400 px-4 py-2 text-sm font-semibold text-red-700 transition-colors duration-200 hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/60"
+            className="btn border border-red-400 text-red-700 hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/60"
           >
             Haan, delete karein
           </button>
           <button
             type="button"
             onClick={() => setConfirming(false)}
-            className="min-h-11 rounded-xl border border-hairline px-4 py-2 text-sm font-semibold transition-colors duration-200 hover:border-pk-400"
+            className="btn btn-quiet"
           >
             Rehne dein
           </button>

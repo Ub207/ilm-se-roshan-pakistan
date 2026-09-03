@@ -42,8 +42,10 @@ export function McqOption({
         : "border-hairline opacity-70";
 
   return (
+    // 16px option text, not 14px: this is the line a grade-5 student actually
+    // has to read, often in their second language and on a phone.
     <label
-      className={`flex min-h-11 items-center gap-3 rounded-xl border px-3.5 py-2.5 text-sm transition-colors duration-200 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-pk-600 ${answered ? "cursor-default" : "cursor-pointer"} ${tone}`}
+      className={`flex min-h-11 items-center gap-3 rounded-control border px-3.5 py-2.5 text-base transition-all duration-150 ease-clay focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-pk-600 ${answered ? "cursor-default" : "cursor-pointer active:translate-y-px"} ${tone}`}
     >
       <input
         type="radio"

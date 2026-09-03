@@ -20,14 +20,36 @@
   --color-pk-950: #012a12;
 
   /*
-   * Soft double shadows ("clay" depth) tinted with the flag green instead of
-   * neutral black, so cards read as part of the palette. Used via shadow-clay
-   * and shadow-clay-lg.
+   * Radius scale — three steps, no more. Claymorphism reads best between 16px
+   * and 24px, so controls sit at 14px, cards at 20px, and full-width panels at
+   * 24px. A button and the card holding it must never look like they came from
+   * two different kits, which is what a free-for-all of rounded-lg/xl/2xl gives.
    */
-  --shadow-clay:
-    0 1px 2px rgb(1 65 28 / 0.06), 0 8px 24px -12px rgb(1 65 28 / 0.18);
-  --shadow-clay-lg:
-    0 2px 4px rgb(1 65 28 / 0.08), 0 18px 40px -16px rgb(1 65 28 / 0.3);
+  --radius-control: 0.875rem;
+  --radius-card: 1.25rem;
+  --radius-panel: 1.5rem;
+
+  /*
+   * One shared easing, deliberately overshoot-free: this is a school app, not a
+   * toy, so surfaces settle rather than bounce. Durations are assigned by
+   * purpose in the component layer — 150ms for hover hints, 200ms for anything
+   * that changes position or depth.
+   */
+  --ease-clay: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Entrance for content that arrives after a request: a lesson, a result. */
+  --animate-rise: rise 420ms var(--ease-clay) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 @theme inline {
@@ -39,6 +61,20 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-lexend);
+
+  /*
+   * "Clay" depth: an inset highlight along the top edge plus two cast shadows
+   * tinted with the flag green rather than neutral black, so a card reads as
+   * part of the palette instead of sitting on top of it. Declared here (inline)
+   * so the three ingredients can be re-tinted per colour scheme below — a white
+   * top highlight that works on paper would be a glowing line on near-black.
+   */
+  --shadow-clay:
+    inset 0 1px 0 var(--clay-top), 0 1px 2px var(--clay-near),
+    0 8px 24px -12px var(--clay-far);
+  --shadow-clay-lg:
+    inset 0 1px 0 var(--clay-top), 0 2px 4px var(--clay-near),
+    0 18px 40px -16px var(--clay-far);
 }
 
 :root {
@@ -47,6 +83,18 @@
   --surface: #ffffff;
   --hairline: #dde9e2;
   --muted: #55685d;
+
+  /* Ingredients of --shadow-clay. See the @theme inline block above. */
+  --clay-top: rgb(255 255 255 / 0.7);
+  --clay-near: rgb(1 65 28 / 0.06);
+  --clay-far: rgb(1 65 28 / 0.2);
+
+  /*
+   * The two stops of the quiz score ring. Kept as tokens because the ring is a
+   * `conic-gradient` in an inline style, where a `dark:` variant cannot reach.
+   */
+  --score-fill: var(--color-pk-700);
+  --score-track: var(--color-pk-100);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -56,6 +104,14 @@
     --surface: #0e1d14;
     --hairline: #1d3427;
     --muted: #9ab0a4;
+
+    /* On near-black, depth comes from the cast shadow; the top edge is a hint. */
+    --clay-top: rgb(255 255 255 / 0.05);
+    --clay-near: rgb(0 0 0 / 0.4);
+    --clay-far: rgb(0 0 0 / 0.6);
+
+    --score-fill: var(--color-pk-400);
+    --score-track: var(--color-pk-900);
   }
 }
 
@@ -99,17 +155,111 @@ body {
     }
   }
 
-  /* Subtle entrance animation for page sections — keeps the page feeling
-     alive without being distracting. Only fires once on load. */
-  @keyframes fade-in-up {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /*
+   * Headings balance their last line instead of leaving one orphan word, and
+   * body copy avoids a single-word final line. Both are pure progressive
+   * enhancement — browsers without support just render as before.
+   */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/*
+ * The component layer is the design system's vocabulary. Before this existed,
+ * every button carried its own twelve-utility string and they had already
+ * drifted — three different radii and two different hover treatments for the
+ * same primary action. One class per intent keeps the tutor, the quiz and the
+ * report visually identical, and makes a system-wide change a one-line edit.
+ */
+@layer components {
+  /* Base: 44px minimum target, per WCAG 2.5.5 / Apple's and Google's guidance. */
+  .btn {
+    @apply inline-flex min-h-11 items-center justify-center gap-2
+      rounded-control px-4 py-2.5 text-sm font-semibold
+      transition-all duration-150 ease-clay active:translate-y-px
+      disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none;
+  }
+
+  /* Page-level calls to action: taller, roomier, 16px type. */
+  .btn-lg {
+    @apply min-h-12 gap-2.5 px-6 py-3 text-base;
+  }
+
+  .btn-primary {
+    @apply bg-pk-900 text-white shadow-clay hover:bg-pk-800 hover:shadow-clay-lg;
+  }
+
+  /* Equal weight to primary in layout, lighter in colour — the second choice. */
+  .btn-secondary {
+    @apply border border-hairline bg-surface text-foreground shadow-clay
+      hover:border-pk-400 hover:shadow-clay-lg;
+  }
+
+  /* Tertiary, inside an already-tinted panel: outline only, no depth. */
+  .btn-outline {
+    @apply border border-pk-700 text-pk-800 hover:bg-pk-50
+      dark:border-pk-400 dark:text-pk-200 dark:hover:bg-pk-900;
+  }
+
+  /* Quietest: an option the student can ignore without losing anything. */
+  .btn-quiet {
+    @apply border border-hairline text-foreground
+      hover:border-pk-400 hover:bg-pk-50 dark:hover:bg-pk-950;
+  }
+
+  /*
+   * Surfaces. `.card` is the neutral container; `.card-accent` is the tinted one
+   * reserved for the single most important thing on a screen — the next lesson,
+   * the score. Padding is a separate class because report tiles and lesson
+   * sections need different insets from the same border and shadow.
+   */
+  .card {
+    @apply rounded-card border border-hairline bg-surface shadow-clay;
+  }
+
+  .card-pad {
+    @apply p-5 sm:p-6;
+  }
+
+  .card-accent {
+    @apply rounded-card border border-pk-200 bg-pk-50 shadow-clay
+      dark:border-pk-800 dark:bg-pk-950/60;
+  }
+
+  /* Only for cards that are themselves links — never on static content. */
+  .card-lift {
+    @apply transition-all duration-200 ease-clay
+      hover:-translate-y-0.5 hover:border-pk-400 hover:shadow-clay-lg
+      active:translate-y-0;
+  }
+
+  /* The small uppercase label that names every section. */
+  .eyebrow {
+    @apply flex items-center gap-2 text-xs font-semibold uppercase tracking-wide
+      text-pk-700 dark:text-pk-300;
+  }
+
+  /* Icon holder beside a heading or inside a card. */
+  .medallion {
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-control
+      bg-pk-50 text-pk-800 dark:bg-pk-950 dark:text-pk-200;
+  }
+
+  /* Progress bars: quiz position, topic mastery, overall score. */
+  .track {
+    @apply h-2 overflow-hidden rounded-full bg-pk-100 dark:bg-pk-900;
+  }
+
+  .track-fill {
+    @apply h-full rounded-full bg-pk-700 transition-[width] duration-500
+      ease-clay dark:bg-pk-400;
   }
 }
 

@@ -22,11 +22,13 @@ export default function Error({
 
   return (
     <main className="mx-auto w-full max-w-xl px-4 py-16 text-center sm:px-6">
-      <WarningIcon className="mx-auto h-10 w-10 text-amber-600 dark:text-amber-400" />
+      <span className="medallion mx-auto h-12 w-12 bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+        <WarningIcon className="h-6 w-6" />
+      </span>
       <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
         Kuch gadbad ho gayi
       </h1>
-      <p className="mt-2 text-muted">
+      <p className="mt-2 leading-relaxed text-muted">
         Page load nahi ho saka. Dobara koshish karein — masla rahe to home se
         shuru karein.
       </p>
@@ -38,18 +40,11 @@ export default function Error({
       )}
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <button
-          type="button"
-          onClick={reset}
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-pk-900 px-5 py-2.5 font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px"
-        >
+        <button type="button" onClick={reset} className="btn btn-lg btn-primary">
           <RetryIcon className="h-5 w-5" />
           Dobara koshish karein
         </button>
-        <Link
-          href="/"
-          className="inline-flex min-h-11 items-center rounded-xl border border-hairline bg-surface px-5 py-2.5 font-semibold transition-colors duration-200 hover:border-pk-400"
-        >
+        <Link href="/" className="btn btn-lg btn-secondary">
           Home
         </Link>
       </div>

@@ -19,6 +19,7 @@ import {
 import { McqOption, OPTION_LETTERS } from "@/components/mcq-option";
 import {
   MAX_TOPIC_LENGTH,
+  MCQ_COUNT,
   SUBJECTS,
   studentErrorMessage,
   type Subject,
@@ -44,13 +45,40 @@ type LoadError = {
   offerQuiz: boolean;
 };
 
-const SUGGESTIONS = [
-  "Pendulum",
-  "Newton's Laws",
-  "Algebra basics",
-  "Photosynthesis",
-  "Tenses in English",
-] as const;
+/**
+ * Starter topics, keyed by subject. A Mathematics student offered
+ * "Photosynthesis" gets nothing out of these chips, so the list follows the
+ * dropdown; `""` is the "Any subject" mix. Written the way a Pakistani teacher
+ * would name the chapter, so the topics are recognisable from a school syllabus.
+ */
+const SUGGESTIONS: Record<Subject | "", readonly string[]> = {
+  "": ["Pendulum", "Newton's Laws", "Algebra basics", "Photosynthesis", "Tenses"],
+  Mathematics: [
+    "Fractions",
+    "Algebra basics",
+    "Pythagoras theorem",
+    "Percentage",
+  ],
+  Science: [
+    "Photosynthesis",
+    "Newton's Laws",
+    "Water cycle",
+    "Human digestive system",
+  ],
+  English: [
+    "Tenses",
+    "Active and passive voice",
+    "Parts of speech",
+    "Essay writing",
+  ],
+  Urdu: ["Ism, fail aur harf", "Wahid aur jama", "Allama Iqbal ki nazm", "Khat likhna"],
+  Islamiat: [
+    "Namaz ki ahmiyat",
+    "Seerat-un-Nabi",
+    "Akhlaq-e-hasana",
+    "Zakat ka maqsad",
+  ],
+};
 
 /**
  * One labelled block of the lesson, so Explanation, Key points, Example, Quiz and
@@ -67,8 +95,8 @@ function LessonSection({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
-      <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+    <section className="card card-pad">
+      <h3 className="eyebrow">
         <Icon className="h-4 w-4" />
         {label}
       </h3>
@@ -105,7 +133,7 @@ export default function TutorClient({
     if (!trimmed) {
       setStatus("error");
       setError({
-        message: "Pehle koi topic likhein — for example Pendulum.",
+        message: "Pehle koi topic likhein — masalan Pendulum.",
         offerQuiz: false,
       });
       return;
@@ -165,7 +193,7 @@ export default function TutorClient({
           event.preventDefault();
           void requestLesson(topic);
         }}
-        className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6"
+        className="card card-pad"
       >
         <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_11rem]">
           <div>
@@ -191,7 +219,7 @@ export default function TutorClient({
               maxLength={MAX_TOPIC_LENGTH}
               onChange={(event) => setTopic(event.target.value)}
               placeholder="Pendulum, Newton's Laws, Algebra..."
-              className="min-h-12 w-full rounded-xl border border-hairline bg-background px-3.5 py-2.5 text-base transition-colors duration-200 placeholder:text-muted hover:border-pk-400 focus:border-pk-500"
+              className="min-h-12 w-full rounded-control border border-hairline bg-background px-3.5 py-2.5 text-base transition-colors duration-150 ease-clay placeholder:text-muted hover:border-pk-400 focus:border-pk-500"
             />
           </div>
 
@@ -209,7 +237,7 @@ export default function TutorClient({
               onChange={(event) =>
                 setSubject(event.target.value as Subject | "")
               }
-              className="min-h-12 w-full rounded-xl border border-hairline bg-background px-3.5 py-2.5 text-base transition-colors duration-200 hover:border-pk-400 focus:border-pk-500"
+              className="min-h-12 w-full rounded-control border border-hairline bg-background px-3.5 py-2.5 text-base transition-colors duration-150 ease-clay hover:border-pk-400 focus:border-pk-500"
             >
               <option value="">Any subject</option>
               {SUBJECTS.map((option) => (
@@ -222,15 +250,11 @@ export default function TutorClient({
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-pk-900 px-5 py-2.5 font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
-          >
+          <button type="submit" disabled={isLoading} className="btn btn-lg btn-primary">
             {isLoading ? (
               <>
                 <SpinnerIcon className="h-5 w-5 animate-spin" />
-                Soch raha hoon...
+                Sabaq ban raha hai...
               </>
             ) : (
               <>
@@ -240,7 +264,7 @@ export default function TutorClient({
             )}
           </button>
           <p className="text-sm text-muted">
-            AI explains it, then gives you 3 practice questions.
+            AI samjhata hai, phir {MCQ_COUNT} practice questions deta hai.
           </p>
         </div>
 
@@ -248,7 +272,7 @@ export default function TutorClient({
           <span className="text-xs font-medium uppercase tracking-wide text-muted">
             Try
           </span>
-          {SUGGESTIONS.map((suggestion) => (
+          {SUGGESTIONS[subject].map((suggestion) => (
             <button
               key={suggestion}
               type="button"
@@ -257,7 +281,7 @@ export default function TutorClient({
                 setTopic(suggestion);
                 void requestLesson(suggestion);
               }}
-              className="inline-flex min-h-11 items-center rounded-full border border-hairline px-4 text-sm text-muted transition-colors duration-200 hover:border-pk-400 hover:bg-pk-50 hover:text-pk-800 disabled:opacity-50 dark:hover:bg-pk-950 dark:hover:text-pk-200"
+              className="inline-flex min-h-11 items-center rounded-full border border-hairline px-4 text-sm text-muted transition-colors duration-150 ease-clay hover:border-pk-400 hover:bg-pk-50 hover:text-pk-800 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-pk-950 dark:hover:text-pk-200"
             >
               {suggestion}
             </button>
@@ -269,7 +293,7 @@ export default function TutorClient({
         {status === "error" && error && (
           <div
             role="alert"
-            className="rounded-2xl border border-red-300 bg-red-50 p-5 text-red-900 shadow-clay sm:p-6 dark:border-red-900 dark:bg-red-950/50 dark:text-red-100"
+            className="animate-rise rounded-card border border-red-300 bg-red-50 p-5 text-red-900 shadow-clay sm:p-6 dark:border-red-900 dark:bg-red-950/50 dark:text-red-100"
           >
             <div className="flex gap-3.5">
               <WarningIcon className="mt-0.5 h-5 w-5 shrink-0" />
@@ -291,17 +315,14 @@ export default function TutorClient({
                 <button
                   type="button"
                   onClick={() => void requestLesson(lastTopic)}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-red-400 bg-surface px-4 py-2 text-sm font-semibold text-red-800 transition-colors duration-200 hover:bg-red-100 dark:border-red-800 dark:text-red-200 dark:hover:bg-red-950"
+                  className="btn border border-red-400 bg-surface text-red-800 hover:bg-red-100 dark:border-red-800 dark:text-red-200 dark:hover:bg-red-950"
                 >
                   <RetryIcon className="h-4 w-4" />
                   Dobara koshish karein
                 </button>
               )}
               {error.offerQuiz && (
-                <Link
-                  href="/quiz"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-hairline bg-surface px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-200 hover:border-pk-400"
-                >
+                <Link href="/quiz" className="btn btn-secondary">
                   <QuizIcon className="h-4 w-4" />
                   Tab tak quiz khel lein
                 </Link>
@@ -311,32 +332,66 @@ export default function TutorClient({
         )}
 
         {isLoading && (
-          <div className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
+          <div className="card card-pad">
             <div className="flex items-center gap-3">
               <SpinnerIcon className="h-5 w-5 animate-spin text-pk-700 dark:text-pk-300" />
               <div>
                 <p className="text-sm font-medium text-foreground">
-                  AI aap ka lesson tayyar kar raha hai...
+                  Ustaad Sahib aap ka sabaq tayyar kar rahe hain...
                 </p>
                 <p className="mt-0.5 text-xs text-muted">
-                  Ustaad Sahib samajh rahe hain — thori der karein
+                  Thori dair intezaar karein — tafseel, misaal aur {MCQ_COUNT}{" "}
+                  sawaal aa rahe hain.
                 </p>
               </div>
             </div>
-            <div className="mt-4 space-y-2.5">
-              {[0, 1, 2, 3].map((row) => (
-                <div
-                  key={row}
-                  className="h-3.5 animate-pulse rounded-full bg-pk-100 dark:bg-pk-950"
-                  style={{ width: `${100 - row * 12}%` }}
-                />
-              ))}
+
+            {/*
+              Shaped like the lesson that is coming — a paragraph, then key
+              points, then answer rows — so the wait previews the result instead
+              of showing four anonymous bars. `animate-pulse` is switched off by
+              the `prefers-reduced-motion` block in globals.css.
+            */}
+            <div aria-hidden="true" className="mt-5 space-y-5">
+              <div className="space-y-2.5">
+                {[100, 96, 88, 71].map((width) => (
+                  <div
+                    key={width}
+                    className="h-3.5 animate-pulse rounded-full bg-pk-100 dark:bg-pk-950"
+                    style={{ width: `${width}%` }}
+                  />
+                ))}
+              </div>
+
+              <div className="space-y-2.5">
+                {[62, 54, 58].map((width, index) => (
+                  <div key={index} className="flex items-center gap-2.5">
+                    <span className="h-3.5 w-3.5 shrink-0 animate-pulse rounded-full bg-pk-200 dark:bg-pk-900" />
+                    <span
+                      className="h-3.5 animate-pulse rounded-full bg-pk-100 dark:bg-pk-950"
+                      style={{ width: `${width}%` }}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid gap-2">
+                {[0, 1, 2].map((row) => (
+                  <div
+                    key={row}
+                    className="h-11 animate-pulse rounded-control bg-pk-50 dark:bg-pk-950/60"
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )}
 
         {status === "ready" && lesson && (
-          <section aria-labelledby="lesson-heading" className="space-y-4">
+          <section
+            aria-labelledby="lesson-heading"
+            className="animate-rise space-y-4"
+          >
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h2
                 id="lesson-heading"
@@ -344,7 +399,12 @@ export default function TutorClient({
               >
                 {lesson.topic}
               </h2>
-              <p className="font-mono text-xs text-muted">{lesson.model}</p>
+              {/* Which model actually taught this — the lesson is generated live,
+                  not read from a fixture, and the student can see that. */}
+              <p className="inline-flex items-center gap-1.5 rounded-full border border-hairline px-2.5 py-1 font-mono text-xs text-muted">
+                <SparkIcon className="h-3.5 w-3.5" />
+                {lesson.model}
+              </p>
             </div>
 
             <LessonSection icon={BookIcon} label="Explanation">
@@ -361,7 +421,7 @@ export default function TutorClient({
                   {lesson.vocabulary.map((term) => (
                     <div
                       key={term.word}
-                      className="rounded-xl border border-hairline p-3"
+                      className="rounded-control border border-hairline p-3"
                     >
                       <dt className="font-medium">{term.word}</dt>
                       <dd className="mt-0.5 text-sm leading-relaxed text-muted">
@@ -394,25 +454,27 @@ export default function TutorClient({
               </LessonSection>
             )}
 
-            <section
-              aria-labelledby="practice-heading"
-              className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6"
-            >
+            <section aria-labelledby="practice-heading" className="card card-pad">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3
-                  id="practice-heading"
-                  className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300"
-                >
+                <h3 id="practice-heading" className="eyebrow">
                   <QuizIcon className="h-4 w-4" />
                   Quiz
                 </h3>
-                <p className="text-sm text-muted">
+                <p className="text-sm text-muted tabular-nums">
                   {answeredCount} / {lesson.mcqs.length} attempted
                 </p>
               </div>
               <p className="mt-1.5 text-sm leading-relaxed text-muted">
                 Har sawaal ka jawab chunein — sahi jawab foran samjha diya jayega.
               </p>
+              <div aria-hidden="true" className="track mt-3">
+                <div
+                  className="track-fill"
+                  style={{
+                    width: `${(answeredCount / lesson.mcqs.length) * 100}%`,
+                  }}
+                />
+              </div>
 
               <ol className="mt-4 space-y-6">
                 {lesson.mcqs.map((mcq, questionIndex) => {
@@ -447,7 +509,7 @@ export default function TutorClient({
                       </fieldset>
 
                       {answered && (
-                        <p className="mt-2.5 max-w-prose rounded-xl bg-pk-50 px-3.5 py-2.5 text-sm leading-relaxed text-pk-900 dark:bg-pk-950 dark:text-pk-100">
+                        <p className="mt-2.5 max-w-prose rounded-control bg-pk-50 px-3.5 py-2.5 text-sm leading-relaxed text-pk-900 dark:bg-pk-950 dark:text-pk-100">
                           <strong className="font-semibold">
                             {chosen === mcq.correctIndex
                               ? "Shabash! "
@@ -485,13 +547,13 @@ export default function TutorClient({
               ) : (
                 <>
                   <p className="max-w-prose text-sm leading-relaxed text-muted">
-                    Pehle khud koshish karein — teeno sawaal attempt karne par poori
-                    list yahan khul jayegi.
+                    Pehle khud koshish karein — har sawaal attempt karne ke baad
+                    poori list yahan khul jayegi.
                   </p>
                   <button
                     type="button"
                     onClick={() => setRevealAll(true)}
-                    className="mt-3.5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-hairline px-4 py-2 text-sm font-semibold transition-colors duration-200 hover:border-pk-400"
+                    className="btn btn-quiet mt-3.5"
                   >
                     <CheckIcon className="h-4 w-4" />
                     Phir bhi sab jawab dikhayein
@@ -500,8 +562,8 @@ export default function TutorClient({
               )}
             </LessonSection>
 
-            <section className="rounded-2xl border border-pk-200 bg-pk-50 p-5 shadow-clay sm:p-6 dark:border-pk-800 dark:bg-pk-950/60">
-              <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+            <section className="card-accent card-pad">
+              <h3 className="eyebrow">
                 <TargetIcon className="h-4 w-4" />
                 Next lesson
               </h3>
@@ -517,12 +579,29 @@ export default function TutorClient({
                   setTopic(lesson.nextLesson.title);
                   void requestLesson(lesson.nextLesson.title);
                 }}
-                className="mt-3.5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-pk-700 px-4 py-2 text-sm font-semibold text-pk-800 transition-colors duration-200 hover:bg-pk-100 dark:border-pk-400 dark:text-pk-200 dark:hover:bg-pk-900"
+                className="btn btn-outline mt-3.5"
               >
-                Yeh parhao
+                Yeh bhi samjhao
                 <ArrowRightIcon className="h-4 w-4" />
               </button>
             </section>
+
+            {/*
+              The lesson is generated live by a free model, and in testing those
+              models do sometimes get a date, a quotation, or a poem's subject
+              wrong. Saying so once, at the bottom, is more honest than a silent
+              claim of authority — and it teaches the habit the student needs
+              anyway: check it against the textbook. Muted and last on purpose,
+              so it reads as a footnote rather than a warning about the app.
+            */}
+            <p className="flex items-start gap-2 px-1 text-xs leading-relaxed text-muted">
+              <WarningIcon className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                Yeh sabaq AI ne abhi banaya hai. Aksar sahi hota hai, lekin
+                kabhi kabhi koi tareekh, shair ya naam ghalat ho sakta hai — imtihan
+                se pehle apni kitab ya ustaad se ek baar check kar lein.
+              </span>
+            </p>
           </section>
         )}
       </div>

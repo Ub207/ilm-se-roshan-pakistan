@@ -37,7 +37,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "math-2",
     subject: "Mathematics",
     topic: "Equivalent Fractions",
-    question: "In mein se kaun 2/4 ke barabar hai?",
+    question: "In mein se kaun sa 2/4 ke barabar hai?",
     options: ["1/2", "2/8", "3/4", "4/6"],
     correctIndex: 0,
     explanation: "2/4 ko 2 se divide karein to 1/2 milta hai.",
@@ -73,7 +73,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "sci-1",
     subject: "Science",
     topic: "Photosynthesis",
-    question: "Photosynthesis ke liye paudhe kaun si gas leti hain?",
+    question: "Photosynthesis ke liye paudhe kaun si gas lete hain?",
     options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
     correctIndex: 1,
     explanation:
@@ -84,7 +84,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     subject: "Science",
     topic: "Newton's Laws",
     question:
-      "Newton ka teesra qanoon: har action ke barabar aur ulta kya hota hai?",
+      "Newton ke teesre qanoon ke mutabiq, har action ka barabar aur mukhalif kya hota hai?",
     options: ["Force", "Reaction", "Motion", "Mass"],
     correctIndex: 1,
     explanation:
@@ -260,17 +260,19 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "isl-4",
     subject: "Islamiat",
     topic: "Quran",
-    question: "Quran Pak kitne paray par mushtamil hai?",
+    question: "Quran Pak kitne paron par mushtamil hai?",
     options: ["20", "30", "40", "114"],
     correctIndex: 1,
-    explanation: "Quran Pak 30 paray aur 114 surahs par mushtamil hai.",
+    explanation: "Quran Pak 30 paron aur 114 suraton par mushtamil hai.",
   },
   {
     id: "isl-5",
     subject: "Islamiat",
     topic: "Seerat",
     question: "Nabi Kareem ﷺ ki wiladat kis shehar mein hui?",
-    options: ["Madinah", "Makkah", "Taif", "Yathrib"],
+    // "Yathrib" is Madinah's pre-Islamic name, so it cannot sit here as a
+    // separate choice — two options would have been the same city.
+    options: ["Madinah", "Makkah", "Taif", "Jeddah"],
     correctIndex: 1,
     explanation: "Aap ﷺ ki wiladat Makkah Mukarramah mein hui.",
   },

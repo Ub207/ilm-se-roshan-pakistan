@@ -29,11 +29,11 @@ export default function SiteHeader() {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-1.5 px-4 py-2.5 sm:px-6 sm:py-3">
         <Link
           href="/"
-          className="order-1 flex items-center gap-2.5 rounded-lg py-1"
+          className="order-1 flex items-center gap-2.5 rounded-control py-1"
         >
           <span
             aria-hidden="true"
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-pk-900 font-mono text-xs font-bold tracking-tight text-white shadow-clay"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-control bg-pk-900 font-mono text-xs font-bold tracking-tight text-white shadow-clay"
           >
             IRP
           </span>
@@ -44,7 +44,7 @@ export default function SiteHeader() {
 
         <Link
           href="/tutor"
-          className="order-2 hidden min-h-11 items-center gap-2 rounded-xl bg-pk-900 px-4 text-sm font-semibold text-white shadow-clay transition-all duration-200 hover:bg-pk-800 hover:shadow-clay-lg active:translate-y-px sm:inline-flex md:order-3"
+          className="btn btn-primary order-2 hidden md:order-3 sm:inline-flex"
         >
           <BookIcon className="h-5 w-5" />
           Start Learning
@@ -54,7 +54,11 @@ export default function SiteHeader() {
           aria-label="Main"
           className="order-3 -mx-1 w-full md:order-2 md:mx-0 md:w-auto"
         >
-          <ul className="grid grid-cols-4 gap-1 text-sm font-medium md:flex md:items-center">
+          {/*
+            8px is the minimum gap between adjacent touch targets (WCAG 2.5.8 /
+            platform guidance) — at gap-1 a thumb aiming for Quiz lands on Tutor.
+          */}
+          <ul className="grid grid-cols-4 gap-2 text-sm font-medium md:flex md:items-center">
             {NAV_LINKS.map((link) => {
               const active = isActive(pathname, link.href);
 
@@ -63,7 +67,7 @@ export default function SiteHeader() {
                   <Link
                     href={link.href}
                     aria-current={active ? "page" : undefined}
-                    className={`flex min-h-11 items-center justify-center rounded-lg px-2 text-center transition-colors duration-200 md:px-3 ${
+                    className={`flex min-h-11 items-center justify-center rounded-control px-2 text-center transition-colors duration-150 ease-clay md:px-3 ${
                       active
                         ? "bg-pk-50 font-semibold text-pk-900 dark:bg-pk-950 dark:text-pk-100"
                         : "text-muted hover:bg-pk-50 hover:text-pk-800 dark:hover:bg-pk-950 dark:hover:text-pk-200"

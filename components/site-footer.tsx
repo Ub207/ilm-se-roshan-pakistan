@@ -14,7 +14,15 @@ import { SUBJECTS } from "@/lib/tutor";
 const FEATURE_LINKS = NAV_LINKS.filter((link) => link.href !== "/");
 
 const linkClass =
-  "inline-flex min-h-9 items-center rounded-lg text-muted transition-colors duration-200 hover:text-pk-800 dark:hover:text-pk-200";
+  "inline-flex min-h-10 items-center rounded-control text-muted transition-colors duration-200 hover:text-pk-800 dark:hover:text-pk-200";
+
+/*
+ * Column headings, not links: uppercase and in the foreground colour so they
+ * out-rank the list under them without borrowing `.eyebrow`'s green, which in
+ * this footer would read as one more thing to click.
+ */
+const columnHeadingClass =
+  "text-xs font-semibold uppercase tracking-wide text-foreground";
 
 /** Site footer. Server Component — no state, no hooks. */
 export default function SiteFooter() {
@@ -26,7 +34,7 @@ export default function SiteFooter() {
             <div className="flex items-center gap-2.5">
               <span
                 aria-hidden="true"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-pk-900 font-mono text-xs font-bold tracking-tight text-white shadow-clay"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-control bg-pk-900 font-mono text-xs font-bold tracking-tight text-white shadow-clay"
               >
                 IRP
               </span>
@@ -39,8 +47,8 @@ export default function SiteFooter() {
           </div>
 
           <div>
-            <h2 className="text-sm font-semibold">Seekhein</h2>
-            <ul className="mt-2 space-y-1 text-sm">
+            <h2 className={columnHeadingClass}>Seekhein</h2>
+            <ul className="mt-2.5 space-y-1 text-sm">
               {FEATURE_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className={linkClass}>
@@ -52,8 +60,8 @@ export default function SiteFooter() {
           </div>
 
           <div>
-            <h2 className="text-sm font-semibold">Subjects</h2>
-            <ul className="mt-2 space-y-1 text-sm">
+            <h2 className={columnHeadingClass}>Subjects</h2>
+            <ul className="mt-2.5 space-y-1 text-sm">
               {SUBJECTS.map((subject) => (
                 <li key={subject}>
                   <Link
@@ -77,7 +85,7 @@ export default function SiteFooter() {
             href={GITHUB_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-lg font-medium transition-colors duration-200 hover:text-pk-800 dark:hover:text-pk-200"
+            className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-control font-medium transition-colors duration-200 hover:text-pk-800 dark:hover:text-pk-200"
           >
             <GithubIcon className="h-5 w-5" />
             Source on GitHub

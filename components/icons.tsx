@@ -1,4 +1,6 @@
-import type { SVGProps } from "react";
+import type { JSX, SVGProps } from "react";
+
+import type { Subject } from "@/lib/tutor";
 
 /**
  * Inline 24×24 outline icons, Heroicons-compatible paths.
@@ -157,6 +159,50 @@ export function HeartIcon(props: IconProps) {
   );
 }
 
+export function CalculatorIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M8.25 6h7.5v2.25h-7.5V6z" />
+      <path d="M12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z" />
+      <path d="M8.25 11.5h.008M12 11.5h.008M15.75 11.5h.008M8.25 14.5h.008M12 14.5h.008M15.75 14.5h.008M8.25 17.5h.008M12 17.5h.008M15.75 17.5h.008" />
+    </Icon>
+  );
+}
+
+export function BeakerIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5m4.75-11.396a24.3 24.3 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M5 14.5l.77-.193A9.065 9.065 0 0112 15c2.09 0 4.166-.24 6.23-.307L19.8 15.3m0 0 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.31 48.31 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5z" />
+    </Icon>
+  );
+}
+
+export function ChatIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M8.625 9.75h6.75m-6.75 3h4.5m6.375-1.5c0 3.728-3.694 6.75-8.25 6.75a9.79 9.79 0 01-2.51-.322L4.5 20.25l.62-3.1A6.44 6.44 0 013 11.999c0-3.728 3.694-6.75 8.25-6.75s8.25 3.022 8.25 6.75z" />
+    </Icon>
+  );
+}
+
+export function PenIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+    </Icon>
+  );
+}
+
+/** Crescent and star — the conventional, respectful mark for Islamiat. */
+export function CrescentIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M20 15.25A8.25 8.25 0 019.5 4.06 8.75 8.75 0 1020 15.25z" />
+      <path d="M18.5 4.5l.62 1.63L20.75 6.75l-1.63.62L18.5 9l-.62-1.63L16.25 6.75l1.63-.62L18.5 4.5z" />
+    </Icon>
+  );
+}
+
 /**
  * Loading indicator. The caller adds `animate-spin`; `prefers-reduced-motion`
  * stops it globally via the rule in globals.css, and the surrounding
@@ -178,4 +224,18 @@ export function GithubIcon(props: IconProps) {
     </Icon>
   );
 }
+
+/**
+ * One icon per subject, so a card is recognisable before its label is read.
+ * Exported as a map rather than looked up at each call site: the home page, the
+ * footer and the tutor all show subjects, and they must never disagree.
+ */
+export const SUBJECT_ICONS: Record<Subject, (props: IconProps) => JSX.Element> = {
+  Mathematics: CalculatorIcon,
+  Science: BeakerIcon,
+  English: ChatIcon,
+  Urdu: PenIcon,
+  Islamiat: CrescentIcon,
+};
+
 

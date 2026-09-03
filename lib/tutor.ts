@@ -94,19 +94,20 @@ export type TutorApiResponse = TutorSuccess | TutorFailure;
  * of these instead, in the same Roman-Urdu register as the rest of the app.
  */
 const TUTOR_ERROR_MESSAGES: Record<TutorErrorCode, string> = {
-  BAD_INPUT: "Topic theek nahi laga. Ek chhota, saaf topic likhein — jaise Pendulum.",
+  BAD_INPUT:
+    "Yeh topic samajh nahi aaya. Ek chhota aur saaf topic likhein — jaise Pendulum.",
   MISSING_KEY:
-    "Tutor abhi configure nahi hua. Admin ko batayein ke API key set karni hai.",
+    "Tutor abhi configure nahi hua. Admin ko batayein ke API key set karni hogi.",
   NO_CREDITS:
-    "AI ka aaj ka free quota khatam ho gaya. Tab tak Quiz aur Report chalte rahenge — kal dobara try karein.",
+    "AI ka aaj ka free quota khatam ho gaya hai. Filhaal Quiz aur Report chalte rahenge — kal dobara koshish karein.",
   RATE_LIMITED:
-    "Bohat requests aa gayi hain. Ek minute rukein, phir dobara try karein.",
+    "Bohat zyada requests aa gayi hain. Ek minute intezaar karein, phir dobara koshish karein.",
   UNAUTHORIZED:
     "AI service ne request qubool nahi ki. Admin ko API key check karni hogi.",
   TIMEOUT:
-    "AI ne waqt par jawab nahi diya. Dobara try karein — aksar doosri koshish chal jati hai.",
+    "AI ne waqt par jawab nahi diya. Dobara koshish karein — aksar doosri koshish mein kaam ban jata hai.",
   BAD_SHAPE:
-    "AI ka jawab adhoora aaya. Dobara try karein, ya topic thora simple likhein.",
+    "AI ka jawab adhoora aaya hai. Dobara koshish karein, ya topic thora aasan likhein.",
   UPSTREAM:
     "AI service se baat nahi ho saki. Thori der baad dobara koshish karein.",
 };
