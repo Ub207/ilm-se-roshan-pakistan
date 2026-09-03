@@ -194,6 +194,59 @@ export default function Home() {
         </div>
       </section>
 
+      {/* IMPACT — Why this matters */}
+      <section
+        aria-labelledby="impact-heading"
+        className="border-b border-hairline bg-surface"
+      >
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+                Kyun zaroori hai?
+              </p>
+              <h2
+                id="impact-heading"
+                className="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl"
+              >
+                Pakistan mein 2.2 crore bache school se bahar hain
+              </h2>
+              <p className="mt-3 max-w-prose leading-relaxed text-muted">
+                Jo bache school mein hain un ke liye bhi — ek teacher ke saamne
+                40-50 bache hain, tuition mehnga hai, aur kamzori ka pata tab
+                chalta hai jab exam mein number kam aayein.
+              </p>
+              <p className="mt-3 max-w-prose leading-relaxed text-muted">
+                Yeh app us khali jagah ko bharti hai: koi bhi topic poochein,
+                AI se samjhein, practice karein, aur apni kami khud dekh lein.
+                Bilkul free, bina login ke, har phone par.
+              </p>
+            </div>
+
+            <ul className="space-y-3">
+              {[
+                { stat: "22M+", label: "Out-of-school children in Pakistan" },
+                { stat: "40:1", label: "Average teacher-to-student ratio" },
+                { stat: "PKR 5,000+", label: "Monthly tuition fees most families cannot afford" },
+                { stat: "0", label: "Login required to use Ilm Se Roshan Pakistan" },
+              ].map((item) => (
+                <li
+                  key={item.label}
+                  className="flex items-center gap-4 rounded-2xl border border-hairline bg-background p-4"
+                >
+                  <span className="shrink-0 text-2xl font-bold tracking-tight text-pk-800 dark:text-pk-300">
+                    {item.stat}
+                  </span>
+                  <span className="text-sm leading-relaxed text-muted">
+                    {item.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section
         aria-labelledby="subjects-heading"
         className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16"
@@ -398,14 +451,14 @@ export default function Home() {
 
       {/* CALL TO ACTION */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="rounded-3xl border border-pk-200 bg-pk-50 px-6 py-10 text-center shadow-clay sm:px-10 sm:py-14 dark:border-pk-800 dark:bg-pk-950/60">
+        <div className="rounded-3xl border border-pk-200 bg-linear-to-b from-pk-50 to-pk-100/50 px-6 py-10 text-center shadow-clay sm:px-10 sm:py-14 dark:border-pk-800 dark:from-pk-950/60 dark:to-pk-950/30">
           <TargetIcon className="mx-auto h-8 w-8 text-pk-700 dark:text-pk-300" />
           <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
             Aaj hi ek topic seekhein
           </h2>
           <p className="mx-auto mt-2.5 max-w-xl leading-relaxed text-muted">
             Ek minute lagta hai. Topic likhein, samjhein, aur {MCQ_COUNT} questions
-            se check karein ke yaad hua ya nahi.
+            se check karein ke yaad hua ya nahi. Koi login, koi fees nahi.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
@@ -423,6 +476,10 @@ export default function Home() {
               Pehle quiz try karein
             </Link>
           </div>
+          <p className="mx-auto mt-5 max-w-md text-xs leading-relaxed text-muted">
+            Mathematics, Science, English, Urdu, aur Islamiat — paanchon subjects
+            covered hain. AI tutor Roman Urdu aur simple English mein samjhata hai.
+          </p>
         </div>
       </section>
     </main>

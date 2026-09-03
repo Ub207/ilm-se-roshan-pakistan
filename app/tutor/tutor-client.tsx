@@ -1,14 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ComponentType, type ReactNode } from "react";
 
 import {
   ArrowRightIcon,
+  BoltIcon,
+  BookIcon,
+  CheckIcon,
+  GlobeIcon,
   QuizIcon,
   RetryIcon,
   SparkIcon,
   SpinnerIcon,
+  TargetIcon,
   WarningIcon,
 } from "@/components/icons";
 import { McqOption, OPTION_LETTERS } from "@/components/mcq-option";
@@ -47,6 +52,39 @@ const SUGGESTIONS = [
   "Tenses in English",
 ] as const;
 
+/**
+ * One labelled block of the lesson, so Explanation, Key points, Example, Quiz and
+ * Correct answers all read identically. The label is an `h3` under the lesson's
+ * `h2` topic heading, which keeps the six sections navigable by screen reader.
+ */
+function LessonSection({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
+      <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+        <Icon className="h-4 w-4" />
+        {label}
+      </h3>
+      <div className="mt-3">{children}</div>
+    </section>
+  );
+}
+
+/** Models write the explanation as one blob or as blank-line-separated paragraphs. */
+function toParagraphs(text: string): string[] {
+  return text
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+}
+
 export default function TutorClient({
   initialTopic,
   initialSubject,
@@ -57,6 +95,8 @@ export default function TutorClient({
   const [lesson, setLesson] = useState<LoadedLesson | null>(null);
   const [error, setError] = useState<LoadError | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  /** Lets a stuck student open the answer list before attempting all three. */
+  const [revealAll, setRevealAll] = useState(false);
   /** Kept so the error panel's retry button knows what to ask for again. */
   const [lastTopic, setLastTopic] = useState("");
 
@@ -75,6 +115,7 @@ export default function TutorClient({
     setError(null);
     setLesson(null);
     setAnswers({});
+    setRevealAll(false);
     setLastTopic(trimmed);
 
     try {
@@ -113,6 +154,9 @@ export default function TutorClient({
   }
 
   const isLoading = status === "loading";
+  const answeredCount = Object.keys(answers).length;
+  const showAnswers =
+    revealAll || (lesson !== null && answeredCount === lesson.mcqs.length);
 
   return (
     <div className="space-y-8">
@@ -268,10 +312,17 @@ export default function TutorClient({
 
         {isLoading && (
           <div className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
-            <p className="flex items-center gap-2 text-sm font-medium text-muted">
-              <SpinnerIcon className="h-4 w-4 animate-spin" />
-              AI aap ka lesson tayyar kar raha hai...
-            </p>
+            <div className="flex items-center gap-3">
+              <SpinnerIcon className="h-5 w-5 animate-spin text-pk-700 dark:text-pk-300" />
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  AI aap ka lesson tayyar kar raha hai...
+                </p>
+                <p className="mt-0.5 text-xs text-muted">
+                  Ustaad Sahib samajh rahe hain — thori der karein
+                </p>
+              </div>
+            </div>
             <div className="mt-4 space-y-2.5">
               {[0, 1, 2, 3].map((row) => (
                 <div
@@ -285,37 +336,83 @@ export default function TutorClient({
         )}
 
         {status === "ready" && lesson && (
-          <>
-            <article className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6">
-              <header className="flex flex-wrap items-baseline justify-between gap-2">
-                <h2 className="text-xl font-semibold sm:text-2xl">
-                  {lesson.topic}
-                </h2>
-                <p className="font-mono text-xs text-muted">{lesson.model}</p>
-              </header>
-              <div className="mt-3 max-w-prose space-y-3 leading-relaxed text-foreground/90">
-                {lesson.explanation
-                  .split(/\n{2,}/)
-                  .map((paragraph) => paragraph.trim())
-                  .filter(Boolean)
-                  .map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
+          <section aria-labelledby="lesson-heading" className="space-y-4">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2
+                id="lesson-heading"
+                className="text-xl font-semibold sm:text-2xl"
+              >
+                {lesson.topic}
+              </h2>
+              <p className="font-mono text-xs text-muted">{lesson.model}</p>
+            </div>
+
+            <LessonSection icon={BookIcon} label="Explanation">
+              <div className="max-w-prose space-y-3 leading-relaxed text-foreground/90">
+                {toParagraphs(lesson.explanation).map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
               </div>
-            </article>
+            </LessonSection>
+
+            {lesson.vocabulary.length > 0 && (
+              <LessonSection icon={GlobeIcon} label="Mushkil alfaaz — hard words">
+                <dl className="grid gap-2.5 sm:grid-cols-2">
+                  {lesson.vocabulary.map((term) => (
+                    <div
+                      key={term.word}
+                      className="rounded-xl border border-hairline p-3"
+                    >
+                      <dt className="font-medium">{term.word}</dt>
+                      <dd className="mt-0.5 text-sm leading-relaxed text-muted">
+                        {term.meaning}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </LessonSection>
+            )}
+
+            {lesson.keyPoints.length > 0 && (
+              <LessonSection icon={SparkIcon} label="Key points">
+                <ul className="max-w-prose space-y-2">
+                  {lesson.keyPoints.map((point, index) => (
+                    <li key={index} className="flex gap-2.5 leading-relaxed">
+                      <CheckIcon className="mt-1 h-4 w-4 shrink-0 text-pk-700 dark:text-pk-300" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </LessonSection>
+            )}
+
+            {lesson.example && (
+              <LessonSection icon={BoltIcon} label="Example">
+                <p className="max-w-prose leading-relaxed text-foreground/90">
+                  {lesson.example}
+                </p>
+              </LessonSection>
+            )}
 
             <section
               aria-labelledby="practice-heading"
               className="rounded-2xl border border-hairline bg-surface p-5 shadow-clay sm:p-6"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h2 id="practice-heading" className="text-lg font-semibold">
-                  Practice questions
-                </h2>
+                <h3
+                  id="practice-heading"
+                  className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300"
+                >
+                  <QuizIcon className="h-4 w-4" />
+                  Quiz
+                </h3>
                 <p className="text-sm text-muted">
-                  {Object.keys(answers).length} / {lesson.mcqs.length} attempted
+                  {answeredCount} / {lesson.mcqs.length} attempted
                 </p>
               </div>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted">
+                Har sawaal ka jawab chunein — sahi jawab foran samjha diya jayega.
+              </p>
 
               <ol className="mt-4 space-y-6">
                 {lesson.mcqs.map((mcq, questionIndex) => {
@@ -365,13 +462,52 @@ export default function TutorClient({
               </ol>
             </section>
 
+            {/* The per-question reveal already teaches; a summary shown before any
+                attempt would just be an answer key. It unlocks once every question
+                is attempted, or on request for a student who is genuinely stuck. */}
+            <LessonSection icon={CheckIcon} label="Correct answers">
+              {showAnswers ? (
+                <ol className="space-y-3">
+                  {lesson.mcqs.map((mcq, index) => (
+                    <li key={index} className="max-w-prose text-sm leading-relaxed">
+                      <span className="font-mono font-semibold text-pk-800 dark:text-pk-200">
+                        {index + 1}. {OPTION_LETTERS[mcq.correctIndex]}
+                      </span>{" "}
+                      <span className="font-medium">
+                        {mcq.options[mcq.correctIndex]}
+                      </span>
+                      {mcq.explanation && (
+                        <span className="text-muted"> — {mcq.explanation}</span>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <>
+                  <p className="max-w-prose text-sm leading-relaxed text-muted">
+                    Pehle khud koshish karein — teeno sawaal attempt karne par poori
+                    list yahan khul jayegi.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setRevealAll(true)}
+                    className="mt-3.5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-hairline px-4 py-2 text-sm font-semibold transition-colors duration-200 hover:border-pk-400"
+                  >
+                    <CheckIcon className="h-4 w-4" />
+                    Phir bhi sab jawab dikhayein
+                  </button>
+                </>
+              )}
+            </LessonSection>
+
             <section className="rounded-2xl border border-pk-200 bg-pk-50 p-5 shadow-clay sm:p-6 dark:border-pk-800 dark:bg-pk-950/60">
-              <p className="text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+              <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-pk-700 dark:text-pk-300">
+                <TargetIcon className="h-4 w-4" />
                 Next lesson
-              </p>
-              <h2 className="mt-1.5 text-lg font-semibold">
+              </h3>
+              <p className="mt-1.5 text-lg font-semibold">
                 {lesson.nextLesson.title}
-              </h2>
+              </p>
               <p className="mt-1 max-w-prose text-sm leading-relaxed text-foreground/80">
                 {lesson.nextLesson.why}
               </p>
@@ -387,7 +523,7 @@ export default function TutorClient({
                 <ArrowRightIcon className="h-4 w-4" />
               </button>
             </section>
-          </>
+          </section>
         )}
       </div>
     </div>

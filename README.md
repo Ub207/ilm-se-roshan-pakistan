@@ -310,13 +310,6 @@ appear here automatically — the paths are already wired up.
 | Report | `docs/screenshots/assessment.png` | Score ring, strong areas, weak areas, recommended next lesson. |
 | Dark mode | `docs/screenshots/dark.png` | Any route with the OS set to dark, to show the second palette. |
 
-<!-- Uncomment each line as the file lands.
-![Home](docs/screenshots/home.png)
-![AI Tutor](docs/screenshots/tutor.png)
-![Quiz](docs/screenshots/quiz.png)
-![Report](docs/screenshots/assessment.png)
--->
-
 > Capture at 1440×900 for desktop shots and 390×844 (iPhone-class) for at least
 > one mobile shot — a low-end phone is the target device, so showing the mobile
 > layout is worth more than another desktop view.
@@ -470,18 +463,12 @@ schedule, either add a few credits to the OpenRouter account or set
 | Name | Role | Links |
 | --- | --- | --- |
 | **Ub207** | Project lead — product, engineering, design | [GitHub](https://github.com/Ub207) |
-| _TODO: add teammate_ | _role_ | _links_ |
-| _TODO: add teammate_ | _role_ | _links_ |
 
-> Replace the `TODO` rows with your teammates before submitting, or delete them if
-> this was a solo build. Judges read this section.
-
-**Submission:** Alibaba Cloud Hackathon — AI for Education.
+**Submission:** Alibaba Cloud Hackathon — Ilm Se Roshan Pakistan.
 
 ## Live Demo
 
-**🔗 <https://ilm-se-roshan-pakistan.vercel.app>** — _TODO: replace with the real
-deployment URL once Vercel has assigned it._
+**🔗 <https://ilm-se-roshan-pakistan.vercel.app>**
 
 What to try, in order, in about ninety seconds:
 
@@ -516,10 +503,6 @@ Issues and pull requests are welcome. Two ground rules if you contribute:
 
 Built for students who are stuck, and for the teachers who do not have time to
 notice. **Ilm se roshan Pakistan.**
-
-
-
-
 
 
 

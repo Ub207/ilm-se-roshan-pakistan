@@ -90,11 +90,25 @@ body {
    */
   html {
     scroll-padding-top: 7.5rem;
+    scroll-behavior: smooth;
   }
 
   @media (min-width: 48rem) {
     html {
       scroll-padding-top: 5rem;
+    }
+  }
+
+  /* Subtle entrance animation for page sections — keeps the page feeling
+     alive without being distracting. Only fires once on load. */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
